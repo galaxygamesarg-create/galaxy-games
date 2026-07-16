@@ -999,24 +999,18 @@ textarea.field { resize: none; height: 110px; }
 /* GTA visual panel */
 .gta-visual {
   position: relative; border-radius: 16px; overflow: hidden;
-  height: 460px; border: 1px solid rgba(255,45,120,.2);
+  aspect-ratio: 16 / 9; width: 100%;
+  border: 1px solid rgba(255,45,120,.2);
   background: linear-gradient(160deg, #1a0525 0%, #2a0a1a 50%, #0d1a2a 100%);
 }
-@media (min-width: 1440px) {
-  .gta-visual { height: 560px; }
-}
-@media (min-width: 1900px) {
-  .gta-visual { height: 640px; }
-}
-/* Looping trailer background */
+/* Looping trailer background — full 16:9 frame, no cropping/zooming */
 .gta-video-bg {
   position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none;
 }
 .gta-video-bg iframe {
-  position: absolute; top: 50%; left: 50%;
-  width: 215%; height: 215%;
-  transform: translate(-50%, -50%);
-  border: none;
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none; pointer-events: none;
 }
 .gta-video-overlay {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
@@ -1295,7 +1289,7 @@ footer p { font-size: .72rem; color: var(--muted); }
   .gta-modal-title { font-size: clamp(1.6rem, 9vw, 2.2rem); }
   .gta-facts { gap: .5rem; }
   .gta-fact-chip { font-size: .7rem; padding: .45rem .8rem; }
-  .gta-visual { height: 220px; }
+  /* .gta-visual sizing now handled by aspect-ratio, no fixed height override needed */
   .gta-teaser-stats { gap: 1.1rem; }
   .gta-teaser-days { font-size: 2rem; }
   .gta-teaser-price { font-size: 1.3rem; }
@@ -1506,7 +1500,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
 
     <div class="gta-visual">
       <div class="gta-video-bg">
-        <iframe id="gta-trailer-iframe" src="https://www.youtube.com/embed/VQRLujxTm3c?autoplay=1&mute=1&loop=1&playlist=VQRLujxTm3c&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&fs=0&enablejsapi=1"
+        <iframe id="gta-trailer-iframe" src="https://www.youtube.com/embed/VQRLujxTm3c?autoplay=1&mute=1&loop=1&playlist=VQRLujxTm3c&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&fs=0"
           title="GTA VI — Trailer 2 oficial Rockstar Games" frameborder="0"
           allow="autoplay; encrypted-media" loading="lazy"></iframe>
       </div>
@@ -2428,30 +2422,9 @@ function checkoutWA(){
   window.open(url, '_blank');
 }
 
-
-/* ============================================
-   GTA TRAILER — pause when off-screen (perf)
-============================================ */
-(function(){
-  const iframe = document.getElementById('gta-trailer-iframe');
-  if(!iframe) return;
-  function postCmd(func){
-    iframe.contentWindow.postMessage(JSON.stringify({ event:'command', func:func, args:[] }), '*');
-  }
-  let firstCallback = true;
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      // Skip the very first callback if the video is already visible — it's already
-      // autoplaying at that point, so sending "playVideo" again just makes the
-      // YouTube player flash its center play/pause icon for no reason.
-      if(firstCallback && e.isIntersecting) return;
-      postCmd(e.isIntersecting ? 'playVideo' : 'pauseVideo');
-    });
-    firstCallback = false;
-  }, { threshold: .15 });
-  // Small delay before observing so the initial autoplay handshake settles first
-  iframe.addEventListener('load', () => setTimeout(() => obs.observe(iframe), 1200));
-})();
+/* GTA trailer: no scroll-based pause/resume — sending API commands via postMessage
+   was causing the YouTube player to flash its control overlay (rewind/pause/forward).
+   The video just autoplays once and loops continuously; simpler and glitch-free. */
 
 /* ============================================
    GTA VI COUNTDOWN
