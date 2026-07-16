@@ -1,0 +1,2459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy Games — Juegos PS, PS Plus Deluxe & GTA VI | Argentina</title>
+<meta name="description" content="Tienda de videojuegos digitales PlayStation, PS Plus Deluxe y preventa de GTA VI en Argentina. FC 26, juegos AAA, activación inmediata. MercadoLíder.">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   VARIABLES & RESET
+============================================ */
+:root {
+  --bg: #05030d;
+  --bg2: #0a071a;
+  --bg3: #0f0a20;
+  --purple: #8b2eff;
+  --purple2: #b06bff;
+  --purple3: #d4a8ff;
+  --cyan: #00e5ff;
+  --cyan2: #80f0ff;
+  --gold: #ffc233;
+  --green: #00ff9d;
+  --red: #ff3355;
+  --white: #f0ebff;
+  --muted: #6b6285;
+  --muted2: #9e98b8;
+  --glow-p: rgba(139,46,255,0.35);
+  --glow-c: rgba(0,229,255,0.25);
+  --border: rgba(139,46,255,0.2);
+  --border2: rgba(0,229,255,0.15);
+  --font-d: 'Orbitron', monospace;
+  --font-b: 'Exo 2', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font-b);
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  
+}
+a { text-decoration: none; color: inherit; }
+
+/* ============================================
+   SCROLLBAR
+============================================ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--purple), var(--cyan)); border-radius: 2px; }
+
+/* ============================================
+   GALAXY BACKGROUND CANVAS
+============================================ */
+#galaxy-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* ============================================
+   CART STYLES
+============================================ */
+/* Cart button in nav */
+.cart-nav-btn {
+  cursor: pointer;
+  position: relative; background: rgba(139,46,255,.15); border: 1px solid var(--border);
+  color: var(--white); width: 38px; height: 38px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; cursor: pointer; transition: all .2s; flex-shrink: 0;
+}
+.cart-nav-btn:hover { background: rgba(139,46,255,.35); border-color: var(--purple); }
+.cart-count {
+  position: absolute; top: -6px; right: -6px;
+  background: var(--red); color: #fff;
+  font-family: var(--font-d); font-size: .55rem; font-weight: 700;
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  display: none;
+  animation: badge-pop .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes badge-pop { from { transform: scale(0); } to { transform: scale(1); } }
+
+/* Cart drawer overlay */
+.cart-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 900;
+  opacity: 0; pointer-events: none; transition: opacity .3s; backdrop-filter: blur(4px);
+}
+.cart-overlay.open { opacity: 1; pointer-events: all; }
+
+/* Cart drawer */
+.cart-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 420px; max-width: 95vw;
+  background: var(--bg2); z-index: 901; border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform .35s cubic-bezier(.4,0,.2,1);
+  box-shadow: -20px 0 60px rgba(0,0,0,.5);
+}
+.cart-drawer.open { transform: translateX(0); }
+
+/* Cart header */
+.cart-header {
+  padding: 1.4rem 1.5rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg3);
+}
+.cart-title { font-family: var(--font-d); font-size: .9rem; font-weight: 700; letter-spacing: .08em; display: flex; align-items: center; gap: 10px; }
+.cart-close {
+  width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border);
+  background: transparent; color: var(--muted2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  transition: all .2s;
+}
+.cart-close:hover { border-color: var(--red); color: var(--red); }
+
+/* Cart items list */
+.cart-items {
+  flex: 1; overflow-y: auto; padding: 1rem 1.5rem;
+}
+.cart-items::-webkit-scrollbar { width: 3px; }
+.cart-items::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 2px; }
+
+/* Empty state */
+.cart-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; gap: 1rem; color: var(--muted);
+}
+.cart-empty-icon { font-size: 3rem; opacity: .4; }
+.cart-empty-txt { font-family: var(--font-d); font-size: .7rem; letter-spacing: .1em; text-align: center; }
+
+/* Cart item */
+.cart-item {
+  display: flex; align-items: center; gap: 1rem;
+  padding: .9rem 0; border-bottom: 1px solid rgba(255,255,255,.05);
+  animation: fadeSlideUp .3s ease;
+}
+.cart-item-icon { font-size: 1.8rem; flex-shrink: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.04); border-radius: 8px; }
+.cart-item-info { flex: 1; min-width: 0; }
+.cart-item-name { font-family: var(--font-d); font-size: .72rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: .15rem; }
+.cart-item-sub { font-size: .68rem; color: var(--muted2); }
+.cart-item-price { font-family: var(--font-d); font-size: .9rem; font-weight: 700; color: var(--purple2); flex-shrink: 0; }
+.cart-item-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: .85rem; padding: 4px; transition: color .2s; flex-shrink: 0; }
+.cart-item-remove:hover { color: var(--red); }
+
+/* Qty control */
+.qty-ctrl { display: flex; align-items: center; gap: 6px; margin-top: .35rem; }
+.qty-btn {
+  cursor: pointer;
+  width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border);
+  background: transparent; color: var(--white); cursor: pointer; font-size: .85rem;
+  display: flex; align-items: center; justify-content: center; transition: all .15s;
+}
+.qty-btn:hover { border-color: var(--purple); background: var(--purple-glow); }
+.qty-val { font-family: var(--font-d); font-size: .7rem; font-weight: 700; min-width: 20px; text-align: center; }
+
+/* Cart footer */
+.cart-footer {
+  padding: 1.2rem 1.5rem; border-top: 1px solid var(--border);
+  background: var(--bg3);
+}
+.cart-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.cart-total-lbl { font-family: var(--font-d); font-size: .65rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted2); }
+.cart-total-val { font-family: var(--font-d); font-size: 1.5rem; font-weight: 900; color: var(--white); }
+.cart-wa-btn {
+  width: 100%; padding: 1rem; border-radius: 8px; border: none;
+  background: #25d366;
+  color: #fff; font-family: var(--font-d); font-size: .75rem; font-weight: 900; letter-spacing: .1em;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all .25s; box-shadow: 0 0 25px rgba(37,211,102,.35);
+}
+.cart-wa-btn:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(37,211,102,.55); }
+.cart-clear-btn {
+  width: 100%; padding: .55rem; border-radius: 6px; margin-top: .6rem;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); font-family: var(--font-d); font-size: .6rem; letter-spacing: .1em;
+  cursor: pointer; transition: all .2s;
+}
+.cart-clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* Add to cart toast */
+.cart-toast {
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--bg3); border: 1px solid var(--purple);
+  border-radius: 8px; padding: .7rem 1.3rem;
+  font-family: var(--font-d); font-size: .68rem; font-weight: 700; letter-spacing: .08em;
+  color: var(--white); z-index: 1000; white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 0 25px rgba(139,46,255,.3);
+}
+.cart-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+
+/* ============================================
+   NOISE OVERLAY
+============================================ */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: .025;
+}
+
+/* ============================================
+   NAV
+============================================ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  height: 68px; padding: 0 2.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(5,3,13,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+nav::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--purple), var(--cyan), transparent);
+  animation: nav-line 4s linear infinite;
+}
+@keyframes nav-line {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.nav-logo { display: flex; align-items: center; gap: 12px; }
+.nav-logo img { height: 40px; width: 40px; object-fit: contain; filter: drop-shadow(0 0 12px var(--purple)); }
+.nav-brand { font-family: var(--font-d); font-size: 1.2rem; font-weight: 700; letter-spacing: .08em; }
+.nav-brand span { color: var(--purple2); text-shadow: 0 0 20px var(--purple); }
+nav ul { display: flex; gap: 2rem; list-style: none; align-items: center; }
+nav ul a {
+  font-family: var(--font-d); font-size: .62rem; font-weight: 600;
+  color: var(--muted2); letter-spacing: .12em; text-transform: uppercase;
+  transition: color .2s; position: relative;
+}
+nav ul a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px;
+  background: var(--cyan); transform: scaleX(0); transition: transform .25s;
+}
+nav ul a:hover { color: var(--white); }
+nav ul a:hover::after { transform: scaleX(1); }
+.nav-cta {
+  background: linear-gradient(135deg, var(--purple), var(--purple2)) !important;
+  color: #fff !important; padding: .4rem 1.2rem; border-radius: 4px;
+  font-family: var(--font-d) !important; font-size: .58rem !important; font-weight: 700 !important;
+  letter-spacing: .1em !important;
+  box-shadow: 0 0 20px rgba(139,46,255,.4);
+  transition: box-shadow .2s !important;
+}
+.nav-cta:hover { box-shadow: 0 0 35px rgba(139,46,255,.7) !important; }
+.nav-cta::after { display: none !important; }
+
+.nav-right { display: flex; align-items: center; gap: .7rem; }
+.nav-burger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  width: 38px; height: 38px; background: rgba(139,46,255,.1); border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer; padding: 0;
+}
+.nav-burger span { display: block; width: 18px; height: 2px; background: var(--white); margin: 0 auto; transition: all .25s; border-radius: 2px; }
+.nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-mobile-overlay {
+  display: none; position: fixed; inset: 0; z-index: 150;
+  background: rgba(0,0,0,.6); backdrop-filter: blur(3px);
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.nav-mobile-overlay.open { opacity: 1; pointer-events: all; }
+
+/* ============================================
+   HERO
+============================================ */
+.hero {
+  min-height: 100vh; position: relative; z-index: 2;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 9rem 2.5rem 5rem;
+  overflow: hidden;
+}
+.hero-scanline {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139,46,255,.015) 2px, rgba(139,46,255,.015) 4px);
+}
+.hero-orb1 {
+  position: absolute; top: -20%; right: -5%; width: 800px; height: 800px; border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(139,46,255,.12) 0%, transparent 60%);
+  animation: orb-pulse 8s ease-in-out infinite;
+}
+.hero-orb2 {
+  position: absolute; bottom: -15%; left: -5%; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(0,229,255,.08) 0%, transparent 60%);
+  animation: orb-pulse 10s ease-in-out infinite reverse;
+}
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.12); opacity: .7; }
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-d); font-size: .6rem; font-weight: 600; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--cyan);
+  margin-bottom: 1.5rem;
+  animation: fadeSlideUp .8s ease both;
+}
+.hero-tag::before { content: '//'; opacity: .6; }
+.hero-tag::after { content: '//'; opacity: .6; }
+.hero h1 {
+  font-family: var(--font-d);
+  font-size: clamp(2.8rem, 7.5vw, 6.5rem);
+  font-weight: 900; line-height: .95; letter-spacing: -.01em;
+  max-width: 860px; margin-bottom: 1.8rem;
+  animation: fadeSlideUp .8s .15s ease both;
+}
+.hero h1 .line2 { display: block; }
+.hero h1 .glitch {
+  color: var(--purple2);
+  position: relative;
+  text-shadow: 0 0 40px rgba(176,107,255,.5);
+  animation: glitch-text 5s ease-in-out infinite;
+}
+@keyframes glitch-text {
+  0%, 90%, 100% { text-shadow: 0 0 40px rgba(176,107,255,.5); transform: none; }
+  91% { transform: translate(-2px, 1px); text-shadow: 2px 0 var(--cyan), -2px 0 var(--red); }
+  92% { transform: translate(2px, -1px); text-shadow: -2px 0 var(--cyan), 2px 0 var(--red); }
+  93% { transform: none; text-shadow: 0 0 40px rgba(176,107,255,.5); }
+}
+.hero-sub {
+  font-size: 1rem; color: var(--muted2); max-width: 480px;
+  font-weight: 300; line-height: 1.85; margin-bottom: 2.8rem;
+  animation: fadeSlideUp .8s .25s ease both;
+}
+.hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeSlideUp .8s .35s ease both; }
+.btn-primary {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple2) 100%);
+  color: #fff; padding: .9rem 2.2rem; border: none; border-radius: 4px;
+  font-family: var(--font-d); font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
+  transition: all .25s;
+  box-shadow: 0 0 25px rgba(139,46,255,.35), inset 0 1px 0 rgba(255,255,255,.1);
+}
+.btn-primary::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,.1) 50%, transparent 70%);
+  transform: translateX(-100%); transition: transform .5s;
+}
+.btn-primary:hover::before { transform: translateX(100%); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(139,46,255,.6), inset 0 1px 0 rgba(255,255,255,.15); }
+.btn-outline {
+  position: relative; overflow: hidden;
+  background: transparent; color: var(--white);
+  padding: .9rem 2.2rem; border-radius: 4px;
+  border: 1px solid var(--border);
+  font-family: var(--font-d); font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
+  transition: all .25s;
+}
+.btn-outline::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--purple); transform: scaleX(0); transform-origin: left;
+  transition: transform .3s ease; z-index: -1;
+}
+.btn-outline:hover { border-color: var(--purple); box-shadow: 0 0 20px rgba(139,46,255,.3); }
+.btn-outline:hover::before { transform: scaleX(1); }
+.hero-stats {
+  display: flex; gap: 3rem; margin-top: 5rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--border);
+  animation: fadeSlideUp .8s .45s ease both;
+}
+.stat-val { font-family: var(--font-d); font-size: 2rem; font-weight: 900; letter-spacing: -.02em; }
+.stat-val span { color: var(--cyan); text-shadow: 0 0 20px var(--cyan); }
+.stat-lbl { font-size: .62rem; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; margin-top: 3px; }
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   SECTION COMMON
+============================================ */
+.section { position: relative; z-index: 2; padding: 6rem 2.5rem; }
+.section-alt { background: var(--bg2); }
+.section::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border) 30%, var(--border2) 70%, transparent 100%);
+}
+.sec-eyebrow {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-d); font-size: .58rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--cyan); margin-bottom: .6rem;
+}
+.sec-eyebrow::before { content: '[ '; } .sec-eyebrow::after { content: ' ]'; }
+.sec-title {
+  font-family: var(--font-d); font-size: clamp(1.7rem, 3vw, 2.8rem);
+  font-weight: 900; letter-spacing: .02em; line-height: 1.1; margin-bottom: .4rem;
+}
+.sec-sub { color: var(--muted2); font-size: .9rem; font-weight: 300; margin-bottom: 3rem; }
+
+/* ============================================
+   HEXAGON BADGE
+============================================ */
+.hex-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 14px 4px 10px; border-radius: 3px;
+  font-family: var(--font-d); font-size: .6rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  position: relative;
+}
+.hex-badge::before { content: '▶'; font-size: .5rem; }
+
+/* ============================================
+   FC 26 SECTION
+============================================ */
+.fc-wrap {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  background: linear-gradient(135deg, rgba(0,229,255,.04) 0%, rgba(139,46,255,.04) 100%);
+  border: 1px solid rgba(0,229,255,.15); border-radius: 12px; padding: 3rem;
+  position: relative; overflow: hidden;
+}
+.fc-wrap::before {
+  content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,255,.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+.fc-wrap::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+.fc-badge-wrap { margin-bottom: 1.2rem; }
+.fc-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(0,229,255,.1); border: 1px solid rgba(0,229,255,.3);
+  color: var(--cyan); font-family: var(--font-d); font-size: .58rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; padding: 5px 14px; border-radius: 3px;
+  animation: pulse-border 2s ease-in-out infinite;
+}
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,255,.3); }
+  50% { box-shadow: 0 0 0 6px rgba(0,229,255,0); }
+}
+.fc-title {
+  font-family: var(--font-d); font-size: clamp(2.2rem, 4vw, 3.8rem);
+  font-weight: 900; letter-spacing: .02em; line-height: 1; margin-bottom: 1rem;
+}
+.fc-title span { color: var(--cyan); text-shadow: 0 0 30px rgba(0,229,255,.5); }
+.fc-desc { font-size: .9rem; color: var(--muted2); font-weight: 300; line-height: 1.8; margin-bottom: 2rem; max-width: 440px; }
+
+/* FC editions */
+.fc-editions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.fc-edition {
+  background: rgba(255,255,255,.03); border: 1px solid var(--border);
+  border-radius: 8px; padding: 1.4rem;
+  transition: all .3s; position: relative; overflow: hidden; cursor: pointer;
+}
+.fc-edition::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(139,46,255,.06) 100%);
+  opacity: 0; transition: opacity .3s;
+  pointer-events: none;
+}
+.fc-edition:hover { border-color: var(--purple2); transform: translateY(-3px); box-shadow: 0 12px 35px rgba(139,46,255,.2); }
+.fc-edition:hover::before { opacity: 1; }
+.ed-eyebrow { font-family: var(--font-d); font-size: .52rem; font-weight: 600; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; margin-bottom: .3rem; }
+.ed-type {
+  display: inline-block; font-family: var(--font-d); font-size: .58rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  background: rgba(139,46,255,.15); border: 1px solid rgba(139,46,255,.3); color: var(--purple2);
+  padding: 2px 9px; border-radius: 3px; margin-bottom: .6rem;
+}
+.ed-type.primary { background: rgba(0,229,255,.1); border-color: rgba(0,229,255,.3); color: var(--cyan); }
+.ed-name { font-family: var(--font-d); font-size: .95rem; font-weight: 700; margin-bottom: .2rem; }
+.ed-platform { font-size: .68rem; color: var(--muted); margin-bottom: .9rem; }
+.ed-price { font-family: var(--font-d); font-size: 1.6rem; font-weight: 900; color: var(--green); text-shadow: 0 0 20px rgba(0,255,157,.3); }
+.ed-old { font-size: .8rem; color: var(--muted); text-decoration: line-through; margin-right: 6px; }
+.ed-cta {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 1rem;
+  font-family: var(--font-d); font-size: .62rem; font-weight: 700; letter-spacing: .1em;
+  color: var(--purple2); transition: gap .2s;
+}
+.ed-cta:hover { gap: 10px; opacity:.85; }
+
+/* FC image */
+.fc-img-panel {
+  border-radius: 10px; overflow: hidden; position: relative;
+  height: 320px; background: linear-gradient(135deg, #050d20 0%, #030d08 100%);
+  border: 1px solid rgba(0,229,255,.12);
+}
+.fc-img-panel img { width: 100%; height: 100%; object-fit: cover; }
+.fc-img-panel .fallback {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 6rem;
+}
+.fc-img-panel::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(0,229,255,.05) 100%);
+}
+
+/* ============================================
+   GAME CARDS
+============================================ */
+.games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 1.4rem; }
+.game-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+  transition: all .3s; position: relative; cursor: pointer;
+}
+.game-card::before {
+  content: ''; position: absolute; inset: 0; border-radius: 10px;
+  background: linear-gradient(135deg, rgba(139,46,255,.08) 0%, transparent 60%);
+  opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 0;
+}
+.game-card:hover { border-color: rgba(139,46,255,.5); transform: translateY(-6px); box-shadow: 0 20px 50px rgba(139,46,255,.18), 0 0 0 1px rgba(139,46,255,.15); }
+.game-card:hover::before { opacity: 1; }
+.game-thumb { height: 188px; position: relative; overflow: hidden; background: var(--bg2); }
+.game-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.game-card:hover .game-thumb img { transform: scale(1.08); }
+.game-thumb .fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.8rem; }
+.g-badge {
+  position: absolute; top: 10px; right: 10px; z-index: 3;
+  font-family: var(--font-d); font-size: .52rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 3px; backdrop-filter: blur(4px);
+}
+.b-new { background: rgba(139,46,255,.8); border: 1px solid var(--purple2); color: #fff; }
+.b-hot { background: rgba(255,51,85,.75); border: 1px solid var(--red); color: #fff; }
+.b-sale { background: rgba(255,194,51,.75); border: 1px solid var(--gold); color: #050000; }
+.b-top { background: rgba(0,255,157,.15); border: 1px solid var(--green); color: var(--green); }
+.g-platform {
+  position: absolute; bottom: 8px; left: 10px; z-index: 3;
+  font-family: var(--font-d); font-size: .5rem; font-weight: 700; letter-spacing: .08em;
+  background: rgba(0,0,0,.8); backdrop-filter: blur(4px); color: rgba(255,255,255,.8);
+  padding: 3px 8px; border-radius: 3px; border: 1px solid rgba(255,255,255,.1);
+}
+.game-scan {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--purple), transparent);
+  transform: translateX(-100%); transition: transform 0s;
+}
+.game-card:hover .game-scan { transform: translateX(100%); transition: transform .8s ease; }
+.game-body { padding: 1.1rem; position: relative; z-index: 2; }
+.game-genre { font-size: .62rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .3rem; }
+.game-title { font-family: var(--font-d); font-size: .95rem; font-weight: 700; letter-spacing: .01em; margin-bottom: .3rem; }
+.game-desc { font-size: .76rem; color: var(--muted2); font-weight: 300; line-height: 1.55; margin-bottom: 1rem; }
+.game-footer { display: flex; align-items: center; justify-content: space-between; }
+.game-price { font-family: var(--font-d); font-size: 1.25rem; font-weight: 900; color: var(--purple2); text-shadow: 0 0 15px rgba(176,107,255,.3); }
+.game-price .old { font-size: .72rem; font-weight: 400; color: var(--muted); text-decoration: line-through; margin-right: 4px; }
+.btn-card {
+  position: relative; overflow: hidden;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--purple2); padding: .42rem 1rem; border-radius: 4px;
+  font-family: var(--font-d); font-size: .6rem; font-weight: 700; letter-spacing: .08em;
+  cursor: pointer; transition: all .25s;
+}
+.btn-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, var(--purple), var(--purple2));
+  transform: scaleX(0); transform-origin: left; transition: transform .25s; z-index: -1;
+}
+.btn-card:hover { color: #fff; border-color: var(--purple); box-shadow: 0 0 20px rgba(139,46,255,.4); }
+.btn-card:hover::before { transform: scaleX(1); }
+
+/* ============================================
+   PS PLUS
+============================================ */
+.ps-top { display: flex; align-items: center; gap: 16px; margin-bottom: 1.6rem; }
+.ps-icon {
+  width: 56px; height: 56px; border-radius: 8px;
+  background: linear-gradient(135deg, #001f5c 0%, #0060be 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d); font-size: 1rem; font-weight: 900; color: #fff;
+  border: 1px solid rgba(0,112,209,.5);
+  box-shadow: 0 0 25px rgba(0,112,209,.3);
+  letter-spacing: -.02em;
+}
+.ps-heading { font-family: var(--font-d); font-size: 1.5rem; font-weight: 900; }
+.ps-heading-sub { font-size: .82rem; color: var(--muted2); font-weight: 300; }
+.ps-alert {
+  background: rgba(0,112,209,.07); border: 1px solid rgba(0,112,209,.22);
+  border-radius: 8px; padding: 1.1rem 1.5rem; margin-bottom: 2.5rem;
+  display: flex; gap: 12px; align-items: flex-start;
+  position: relative; overflow: hidden;
+}
+.ps-alert::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, #003087, #0070d1);
+}
+.ps-alert p { font-size: .82rem; color: var(--muted2); line-height: 1.7; }
+.ps-alert span { color: var(--white); font-weight: 500; }
+
+/* PS Plus single card - full width */
+.psplus-card {
+  max-width: 700px; margin: 0 auto;
+  background: linear-gradient(160deg, rgba(139,46,255,.06) 0%, rgba(0,112,209,.06) 100%);
+  border: 1px solid var(--purple);
+  border-radius: 14px; padding: 2.5rem;
+  position: relative; overflow: hidden;
+  box-shadow: 0 0 60px rgba(139,46,255,.12), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.psplus-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--purple), var(--cyan), var(--purple));
+  animation: shimmer-top 3s linear infinite;
+  pointer-events: none;
+}
+@keyframes shimmer-top {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.psplus-badge-top {
+  position: absolute; top: -1px; right: 2.5rem;
+  background: linear-gradient(135deg, var(--purple), var(--purple2));
+  color: #fff; font-family: var(--font-d); font-size: .56rem; font-weight: 700; letter-spacing: .12em;
+  padding: 6px 18px; border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 15px rgba(139,46,255,.4);
+}
+.psplus-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+.psplus-left { }
+.psplus-icon {
+  width: 44px; height: 44px; border-radius: 7px;
+  background: linear-gradient(135deg, #001f5c, #0060be);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d); font-size: .95rem; font-weight: 900; color: #fff;
+  margin-bottom: .9rem;
+}
+.psplus-tier { font-family: var(--font-d); font-size: .58rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: .2rem; }
+.psplus-name { font-family: var(--font-d); font-size: 2rem; font-weight: 900; margin-bottom: 1.5rem; }
+
+/* Month selector */
+.month-selector { margin-bottom: 1.2rem; }
+.month-label { font-family: var(--font-d); font-size: .56rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: .65rem; }
+.month-btns { display: flex; gap: .6rem; }
+.mth-btn {
+  flex: 1; padding: .7rem 1rem; border-radius: 6px;
+  border: 1px solid var(--border); background: rgba(255,255,255,.03);
+  color: var(--muted2); font-family: var(--font-d); font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+  cursor: pointer; transition: all .25s; text-align: center; position: relative; z-index: 2; overflow: hidden;
+}
+.mth-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--purple), var(--purple2));
+  opacity: 0; transition: opacity .25s; z-index: 0;
+}
+.mth-btn span { position: relative; z-index: 1; }
+.mth-btn .sub-text { display: block; font-size: .55rem; font-weight: 400; color: var(--muted); margin-top: 2px; transition: color .25s; }
+.mth-btn:hover { border-color: var(--purple); color: var(--white); }
+.mth-btn:hover::before { opacity: .5; }
+.mth-btn.active { border-color: var(--purple2); color: #fff; box-shadow: 0 0 20px rgba(139,46,255,.35); }
+.mth-btn.active::before { opacity: 1; }
+.mth-btn.active .sub-text { color: rgba(255,255,255,.7); }
+
+/* price display */
+.price-display { min-height: 70px; display: flex; align-items: flex-end; gap: 10px; margin-bottom: .4rem; }
+.price-val {
+  font-family: var(--font-d); font-size: 3rem; font-weight: 900; color: var(--white);
+  text-shadow: 0 0 30px rgba(139,46,255,.4); display: none;
+  animation: price-pop .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes price-pop {
+  from { transform: scale(.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.price-val.active { display: block; }
+.price-sub { font-family: var(--font-d); font-size: .75rem; color: var(--muted); margin-bottom: .5rem; }
+.price-note { font-size: .75rem; color: var(--muted2); margin-bottom: 1.8rem; }
+
+/* features */
+.psplus-features { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+.psplus-features li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: .82rem; font-weight: 300; color: var(--muted2); line-height: 1.5;
+}
+.feat-icon { font-size: .7rem; margin-top: 3px; flex-shrink: 0; }
+.psplus-features li.hi { color: var(--white); font-weight: 500; }
+
+/* plan cta */
+.plan-cta {
+  width: 100%; margin-top: 1.8rem; padding: 1rem; border-radius: 6px; border: none;
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple2) 100%);
+  color: #fff; font-family: var(--font-d); font-size: .75rem; font-weight: 700; letter-spacing: .1em;
+  cursor: pointer; position: relative; z-index: 2; overflow: hidden; transition: all .25s;
+  box-shadow: 0 0 25px rgba(139,46,255,.35);
+}
+.plan-cta::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+  animation: btn-shine 3s ease-in-out infinite;
+}
+@keyframes btn-shine {
+  0% { left: -100%; } 60%, 100% { left: 150%; }
+}
+.plan-cta:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(139,46,255,.6); }
+.psplus-guarantee {
+  margin-top: 2.5rem; padding: 1.2rem 1.5rem;
+  background: rgba(0,255,157,.05); border: 1px solid rgba(0,255,157,.18); border-radius: 8px;
+  font-size: .8rem; color: var(--muted2); line-height: 1.7;
+}
+.psplus-guarantee strong { color: var(--green); }
+
+/* ============================================
+   CONTACT
+============================================ */
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4.5rem; align-items: start; }
+.contact-form-wrap { }
+.field-group { margin-bottom: 1rem; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.field-label { font-family: var(--font-d); font-size: .55rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: .45rem; display: block; }
+.field {
+  width: 100%; background: rgba(255,255,255,.03);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: .82rem 1.1rem; color: var(--white);
+  font-family: var(--font-b); font-size: .87rem; font-weight: 300;
+  outline: none; transition: border-color .2s, box-shadow .2s;
+}
+.field::placeholder { color: rgba(255,255,255,.18); }
+.field:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(139,46,255,.12); }
+textarea.field { resize: none; height: 110px; }
+.submit-btn {
+  width: 100%; padding: 1rem; border-radius: 6px; border: none;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  color: var(--bg); font-family: var(--font-d); font-size: .75rem; font-weight: 900; letter-spacing: .12em;
+  cursor: pointer; position: relative; overflow: hidden;
+  box-shadow: 0 0 30px rgba(0,229,255,.2), 0 0 30px rgba(139,46,255,.2);
+  transition: all .25s;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,229,255,.35), 0 0 50px rgba(139,46,255,.35); }
+.contact-info { padding-top: .5rem; }
+.contact-channel {
+  display: flex; align-items: center; gap: 14px; padding: 1rem 1.2rem;
+  background: rgba(255,255,255,.02); border: 1px solid var(--border);
+  border-radius: 8px; margin-bottom: .75rem;
+  transition: all .25s; 
+}
+.contact-channel:hover { border-color: var(--purple2); background: rgba(139,46,255,.06); transform: translateX(4px); }
+.ch-icon {
+  width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  background: var(--purple-glow); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+  background: rgba(139,46,255,.1);
+}
+.ch-label { font-family: var(--font-d); font-size: .56rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .1rem; }
+.ch-val { font-size: .88rem; font-weight: 500; color: var(--white); }
+.ch-val a { color: var(--purple2); transition: color .2s; }
+.ch-val a:hover { color: var(--cyan); }
+.trust-box {
+  margin-top: 2rem; padding: 1.3rem 1.5rem;
+  background: linear-gradient(135deg, rgba(0,255,157,.05) 0%, rgba(139,46,255,.05) 100%);
+  border: 1px solid rgba(0,255,157,.15); border-radius: 10px;
+}
+.trust-title { font-family: var(--font-d); font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--green); margin-bottom: .6rem; display: flex; align-items: center; gap: 8px; }
+.trust-list { display: flex; flex-direction: column; gap: .45rem; }
+.trust-list li { font-size: .8rem; color: var(--muted2); font-weight: 300; display: flex; align-items: flex-start; gap: 8px; }
+.trust-list li::before { content: ''; display: inline-block; width: 14px; height: 14px; margin-top: 2px; background-color: var(--green); -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5.5 5.5L20 6.5'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5.5 5.5L20 6.5'/%3E%3C/svg%3E"); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; flex-shrink: 0; }
+
+/* ============================================
+   MERCADOLIBRE SECTION
+============================================ */
+.ml-section { position: relative; z-index: 2; padding: 6rem 2.5rem; background: var(--bg3); }
+.ml-section::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,230,0,.3) 30%, rgba(0,229,255,.2) 70%, transparent 100%);
+}
+
+/* ML Hero Badge */
+.ml-hero-badge {
+  display: flex; align-items: center; justify-content: center;
+  gap: 3rem; flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(255,230,0,.04) 0%, rgba(255,160,0,.04) 100%);
+  border: 1px solid rgba(255,200,0,.18); border-radius: 16px;
+  padding: 2.5rem 3rem; margin-bottom: 3rem; position: relative; overflow: hidden;
+}
+.ml-hero-badge::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #ffe600, #ff9900, transparent);
+  animation: ml-top-shimmer 3s linear infinite;
+}
+@keyframes ml-top-shimmer { 0% { opacity:.5; } 50% { opacity:1; } 100% { opacity:.5; } }
+
+.ml-leader-badge {
+  display: flex; flex-direction: column; align-items: center; gap: .4rem;
+  position: relative;
+}
+.ml-medal {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: linear-gradient(135deg, #ffe600 0%, #ff9900 50%, #ffcc00 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 35px rgba(255,200,0,.5), 0 0 70px rgba(255,200,0,.2), inset 0 2px 0 rgba(255,255,255,.3);
+  animation: medal-pulse 3s ease-in-out infinite;
+  position: relative;
+}
+@keyframes medal-pulse {
+  0%, 100% { box-shadow: 0 0 35px rgba(255,200,0,.5), 0 0 70px rgba(255,200,0,.2); transform: scale(1); }
+  50% { box-shadow: 0 0 50px rgba(255,200,0,.7), 0 0 100px rgba(255,200,0,.3); transform: scale(1.04); }
+}
+.ml-medal-inner {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem;
+}
+.ml-leader-title {
+  font-family: var(--font-d); font-size: .72rem; font-weight: 900; letter-spacing: .14em;
+  text-transform: uppercase; color: #ffd700;
+  text-shadow: 0 0 20px rgba(255,215,0,.6);
+  white-space: nowrap;
+}
+.ml-leader-sub { font-size: .7rem; color: rgba(255,215,0,.7); font-weight: 300; white-space: nowrap; }
+
+/* ML Stats row */
+.ml-stats-row { display: flex; gap: 2.5rem; align-items: center; flex-wrap: wrap; }
+.ml-stat {
+  text-align: center;
+  position: relative; padding: 0 2.5rem 0 0;
+}
+.ml-stat:not(:last-child)::after {
+  content: ''; position: absolute; right: 0; top: 10%; height: 80%;
+  width: 1px; background: rgba(255,200,0,.2);
+}
+.ml-stat-val { font-family: var(--font-d); font-size: 2rem; font-weight: 900; color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,.4); line-height: 1; }
+.ml-stat-val span { color: var(--green); }
+.ml-stat-lbl { font-size: .65rem; color: var(--muted2); letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+
+/* ML CTA */
+.ml-cta-wrap { display: flex; flex-direction: column; align-items: center; gap: .7rem; }
+.ml-cta-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, #ffe600, #ff9900);
+  color: #1a0e00; padding: .9rem 2rem; border-radius: 8px; border: none;
+  font-family: var(--font-d); font-size: .72rem; font-weight: 900; letter-spacing: .1em;
+  cursor: pointer; transition: all .25s; white-space: nowrap;
+  box-shadow: 0 0 25px rgba(255,200,0,.35);
+}
+.ml-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 0 45px rgba(255,200,0,.6); }
+.ml-cta-sub { font-size: .68rem; color: var(--muted); text-align: center; }
+
+/* ML cards grid - preview of listing style */
+.ml-preview-title {
+  font-family: var(--font-d); font-size: .62rem; font-weight: 600; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.ml-preview-title::before, .ml-preview-title::after { content: '─────'; opacity: .3; }
+
+.ml-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.ml-card {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,200,0,.1);
+  border-radius: 10px; padding: 1.1rem; transition: all .25s; 
+  position: relative; overflow: hidden;
+}
+.ml-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,200,0,.04), transparent);
+  opacity: 0; transition: opacity .25s;
+}
+.ml-card:hover { border-color: rgba(255,200,0,.35); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(255,200,0,.1); }
+.ml-card:hover::before { opacity: 1; }
+.ml-card-icon { font-size: 1.6rem; margin-bottom: .6rem; }
+.ml-card-name { font-family: var(--font-d); font-size: .72rem; font-weight: 700; margin-bottom: .2rem; }
+.ml-card-sold { font-size: .65rem; color: var(--muted2); }
+.ml-card-stars { color: #ffd700; font-size: .75rem; margin-top: .3rem; letter-spacing: 1px; }
+.ml-card-badge {
+  display: inline-block; margin-top: .5rem;
+  font-family: var(--font-d); font-size: .52rem; font-weight: 700; letter-spacing: .08em;
+  background: rgba(0,229,255,.1); border: 1px solid rgba(0,229,255,.25); color: var(--cyan);
+  padding: 2px 8px; border-radius: 3px;
+}
+
+/* ML bottom banner */
+.ml-bottom-banner {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+  background: linear-gradient(135deg, rgba(255,200,0,.06) 0%, rgba(255,100,0,.06) 100%);
+  border: 1px solid rgba(255,200,0,.15); border-radius: 12px; padding: 1.75rem 2rem;
+}
+.ml-banner-text h3 { font-family: var(--font-d); font-size: 1rem; font-weight: 700; margin-bottom: .3rem; }
+.ml-banner-text h3 span { color: #ffd700; }
+.ml-banner-text p { font-size: .82rem; color: var(--muted2); font-weight: 300; max-width: 500px; line-height: 1.6; }
+.ml-banner-badges { display: flex; gap: .75rem; flex-wrap: wrap; }
+.ml-trust-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,200,0,.15);
+  border-radius: 6px; padding: .5rem .9rem;
+  font-size: .72rem; color: var(--muted2); white-space: nowrap;
+}
+.ml-trust-badge span { color: #ffd700; font-weight: 600; }
+
+/* Animated counter */
+.counting { transition: all .3s; }
+
+/* Cuotas sin interes banner */
+.ml-cuotas-banner {
+  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  background: rgba(0,255,157,.05); border: 1px solid rgba(0,255,157,.2);
+  border-radius: 10px; padding: 1.4rem 1.8rem; margin-bottom: 2rem;
+  position: relative; overflow: hidden;
+}
+.ml-cuotas-banner::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: linear-gradient(180deg, var(--green), #00a86b);
+}
+.ml-cuotas-icon { font-size: 2rem; flex-shrink: 0; }
+.ml-cuotas-text { flex: 1; min-width: 200px; }
+.ml-cuotas-title { font-family: var(--font-d); font-size: .8rem; font-weight: 700; color: var(--green); margin-bottom: .3rem; letter-spacing: .04em; }
+.ml-cuotas-sub { font-size: .8rem; color: var(--muted2); line-height: 1.6; }
+.ml-cuotas-sub span { color: var(--white); font-weight: 600; }
+.ml-cuotas-btn {
+  background: transparent; border: 1px solid var(--green); color: var(--green);
+  padding: .6rem 1.3rem; border-radius: 6px;
+  font-family: var(--font-d); font-size: .68rem; font-weight: 700; letter-spacing: .08em;
+  cursor: pointer; transition: all .25s; white-space: nowrap;
+}
+.ml-cuotas-btn:hover { background: rgba(0,255,157,.1); box-shadow: 0 0 20px rgba(0,255,157,.2); }
+
+/* ============================================
+   GTA 6 PREVENTA SECTION
+============================================ */
+.gta-section {
+  position: relative; z-index: 2; padding: 6rem 2.5rem;
+  background: linear-gradient(180deg, #0a0410 0%, #14051a 50%, #0a0410 100%);
+  overflow: hidden;
+}
+.gta-section::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #ff2d78 30%, #00e5ff 70%, transparent 100%);
+}
+/* Vice City palm/sunset backdrop glow */
+.gta-bg-glow1 {
+  position: absolute; top: -10%; left: -10%; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,45,120,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.gta-bg-glow2 {
+  position: absolute; bottom: -15%; right: -10%; width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,229,255,.09) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.gta-hero-badge {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: linear-gradient(135deg, rgba(255,45,120,.15), rgba(255,140,0,.1));
+  border: 1px solid rgba(255,45,120,.35);
+  color: #ff5c9a; font-family: var(--font-d); font-size: .62rem; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase; padding: 6px 16px; border-radius: 20px;
+  margin-bottom: 1.4rem; position: relative; z-index: 2;
+  animation: gta-badge-pulse 2.2s ease-in-out infinite;
+}
+@keyframes gta-badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,45,120,.3); }
+  50% { box-shadow: 0 0 0 8px rgba(255,45,120,0); }
+}
+
+.gta-title {
+  font-family: var(--font-d); font-size: clamp(2.6rem, 6vw, 5.2rem);
+  font-weight: 900; line-height: .95; letter-spacing: -.01em;
+  margin-bottom: 1rem; position: relative; z-index: 2;
+}
+.gta-title .gta-vi {
+  background: linear-gradient(90deg, #ff2d78, #ff8c00, #ff2d78);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: gta-gradient-move 4s linear infinite;
+  text-shadow: none;
+}
+@keyframes gta-gradient-move {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+.gta-subtitle {
+  font-size: .95rem; color: var(--muted2); max-width: 520px; font-weight: 300;
+  line-height: 1.8; margin-bottom: 2rem; position: relative; z-index: 2;
+}
+.gta-subtitle strong { color: var(--white); font-weight: 500; }
+
+/* Fact chips row */
+.gta-facts { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 2.2rem; position: relative; z-index: 2; }
+.gta-fact-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 8px; padding: .55rem 1rem;
+  font-size: .78rem; color: var(--muted2);
+}
+.gta-fact-chip strong { color: var(--white); font-weight: 600; }
+.gta-fact-chip .ic { font-size: .95rem; }
+
+/* Countdown */
+.gta-countdown-wrap { margin-bottom: 2.2rem; position: relative; z-index: 2; }
+.gta-countdown-label {
+  font-family: var(--font-d); font-size: .6rem; font-weight: 600; letter-spacing: .16em;
+  text-transform: uppercase; color: #ff5c9a; margin-bottom: .7rem;
+}
+.gta-countdown { display: flex; gap: .8rem; }
+.gta-cd-box {
+  background: rgba(255,45,120,.06); border: 1px solid rgba(255,45,120,.25);
+  border-radius: 8px; padding: .8rem 1rem; text-align: center; min-width: 68px;
+}
+.gta-cd-num {
+  font-family: var(--font-d); font-size: 1.6rem; font-weight: 900; color: #fff;
+  text-shadow: 0 0 20px rgba(255,45,120,.5); line-height: 1;
+}
+.gta-cd-lbl { font-size: .58rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 3px; }
+
+/* GTA visual panel */
+.gta-visual {
+  position: relative; border-radius: 16px; overflow: hidden;
+  height: 460px; border: 1px solid rgba(255,45,120,.2);
+  background: linear-gradient(160deg, #1a0525 0%, #2a0a1a 50%, #0d1a2a 100%);
+}
+/* Looping trailer background */
+.gta-video-bg {
+  position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none;
+}
+.gta-video-bg iframe {
+  position: absolute; top: 50%; left: 50%;
+  width: 177.78%; height: 177.78%;
+  transform: translate(-50%, -50%);
+  border: none;
+}
+.gta-video-overlay {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(20,4,26,.35) 0%, rgba(15,4,20,.25) 35%, rgba(8,3,13,.92) 100%),
+    linear-gradient(135deg, rgba(255,45,120,.2) 0%, rgba(0,229,255,.1) 100%);
+}
+.gta-visual-fallback { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .gta-video-bg { display: none; }
+  .gta-visual-fallback { display: block; }
+}
+.gta-visual::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,45,120,.25) 0%, transparent 45%),
+    radial-gradient(circle at 75% 65%, rgba(0,229,255,.2) 0%, transparent 45%),
+    radial-gradient(circle at 20% 80%, rgba(255,140,0,.15) 0%, transparent 40%);
+  pointer-events: none;
+}
+.gta-visual .gta-sun {
+  position: absolute; top: 18%; left: 50%; transform: translateX(-50%);
+  width: 160px; height: 160px; border-radius: 50%;
+  background: radial-gradient(circle, #ffdf6b 0%, #ff8c3c 45%, #ff2d78 80%, transparent 100%);
+  box-shadow: 0 0 80px rgba(255,140,60,.5);
+  animation: gta-sun-pulse 4s ease-in-out infinite;
+}
+@keyframes gta-sun-pulse {
+  0%,100% { opacity:.85; transform: translateX(-50%) scale(1); }
+  50% { opacity:1; transform: translateX(-50%) scale(1.05); }
+}
+.gta-visual .gta-skyline {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 45%;
+  background: linear-gradient(180deg, transparent 0%, rgba(10,4,15,.4) 40%, rgba(10,4,15,.95) 100%);
+}
+.gta-visual .gta-logo-text {
+  position: absolute; bottom: 28px; left: 28px; z-index: 2;
+  font-family: var(--font-d); font-size: 2.4rem; font-weight: 900; letter-spacing: .04em;
+  color: #fff; text-shadow: 0 0 30px rgba(255,45,120,.6);
+}
+.gta-visual .gta-logo-text span { color: #ff2d78; }
+.gta-visual .gta-tagline {
+  position: absolute; bottom: 14px; left: 30px; z-index: 2;
+  font-family: var(--font-d); font-size: .62rem; letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+}
+/* Palm silhouettes */
+.gta-palm { position: absolute; bottom: 40%; font-size: 3.5rem; opacity: .25; filter: brightness(0) invert(0) sepia(1) hue-rotate(280deg); }
+
+/* ============================================
+   GTA TEASER (compact homepage view)
+============================================ */
+.gta-teaser-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 3.5rem; align-items: center; position: relative; z-index: 2; }
+.gta-teaser-stats { display: flex; align-items: center; gap: 1.8rem; margin: 1.9rem 0 2.1rem; }
+.gta-teaser-days { font-family: var(--font-d); font-size: 2.6rem; font-weight: 900; color: #ff5c9a; text-shadow: 0 0 25px rgba(255,45,120,.5); line-height: 1; }
+.gta-teaser-price { font-family: var(--font-d); font-size: 1.7rem; font-weight: 800; color: var(--white); line-height: 1; }
+.gta-teaser-days-lbl { font-size: .62rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: .4rem; }
+.gta-teaser-divider { width: 1px; height: 42px; background: rgba(255,255,255,.12); }
+.gta-teaser-cta { font-size: .8rem !important; padding: 1rem 2.3rem !important; }
+
+/* ============================================
+   GTA MODAL — full detail overlay
+============================================ */
+.gta-modal-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(4,2,8,.8); backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.gta-modal-overlay.open { opacity: 1; pointer-events: all; }
+.gta-modal {
+  position: fixed; top: 50%; left: 50%; z-index: 601;
+  transform: translate(-50%,-50%) scale(.96);
+  width: 92vw; max-width: 1000px; max-height: 88vh; overflow-y: auto;
+  background: linear-gradient(180deg, #0d0715 0%, #170819 55%, #0d0715 100%);
+  border: 1px solid rgba(255,45,120,.3); border-radius: 18px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease;
+  box-shadow: 0 30px 90px rgba(0,0,0,.65), 0 0 70px rgba(255,45,120,.15);
+}
+.gta-modal.open { opacity: 1; pointer-events: all; transform: translate(-50%,-50%) scale(1); }
+.gta-modal::-webkit-scrollbar { width: 5px; }
+.gta-modal::-webkit-scrollbar-thumb { background: #ff2d78; border-radius: 3px; }
+.gta-modal-inner { padding: 3rem 2.5rem 2.5rem; position: relative; }
+.gta-modal-close {
+  position: absolute; top: 1.2rem; right: 1.2rem; z-index: 5;
+  width: 38px; height: 38px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.05);
+  color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.gta-modal-close:hover { background: rgba(255,45,120,.25); border-color: #ff2d78; }
+.gta-modal-title {
+  font-family: var(--font-d); font-size: clamp(1.9rem, 5vw, 2.9rem); font-weight: 900;
+  letter-spacing: -.01em; margin: 1.2rem 0 .8rem; line-height: 1.05;
+}
+body.gta-modal-open { overflow: hidden; }
+
+/* Preorder editions */
+.gta-editions-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4rem; margin-top: 3rem; }
+.gta-edition-group { margin-top: 2.5rem; }
+.gta-edition-group:first-child { margin-top: 3rem; }
+.gta-group-title {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 1.2rem;
+  font-family: var(--font-d); font-size: .82rem; font-weight: 700; letter-spacing: .06em;
+  color: var(--white);
+}
+.gta-group-title .line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(255,45,120,.3), transparent); }
+.gta-group-title .usd-tag {
+  font-size: .62rem; font-weight: 500; color: var(--muted); letter-spacing: .04em;
+  background: rgba(255,255,255,.04); padding: 3px 9px; border-radius: 4px; border: 1px solid rgba(255,255,255,.08);
+}
+.gta-edition-card {
+  background: var(--bg3); border: 1px solid rgba(255,45,120,.18);
+  border-radius: 14px; padding: 1.8rem; position: relative; overflow: hidden;
+  transition: all .3s;
+}
+.gta-edition-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,45,120,.05), rgba(0,229,255,.04));
+  opacity: 0; transition: opacity .3s; pointer-events: none;
+}
+.gta-edition-card:hover { border-color: rgba(255,45,120,.5); transform: translateY(-5px); box-shadow: 0 18px 45px rgba(255,45,120,.15); }
+.gta-edition-card:hover::before { opacity: 1; }
+.gta-edition-card.primary { border-color: rgba(255,45,120,.4); background: linear-gradient(160deg, rgba(255,45,120,.05), rgba(20,5,20,.4)); }
+.gta-ed-badge-top {
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff2d78, #ff8c00);
+  color: #fff; font-family: var(--font-d); font-size: .55rem; font-weight: 700; letter-spacing: .1em;
+  padding: 4px 16px; border-radius: 0 0 8px 8px; white-space: nowrap;
+}
+.gta-ed-type {
+  display: inline-block; font-family: var(--font-d); font-size: .58rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  background: rgba(255,45,120,.12); border: 1px solid rgba(255,45,120,.3); color: #ff5c9a;
+  padding: 3px 10px; border-radius: 3px; margin-bottom: .8rem;
+}
+.gta-ed-type.secondary { background: rgba(0,229,255,.1); border-color: rgba(0,229,255,.3); color: var(--cyan); }
+.gta-ed-name { font-family: var(--font-d); font-size: 1.15rem; font-weight: 800; margin-bottom: .25rem; }
+.gta-ed-sub { font-size: .74rem; color: var(--muted); margin-bottom: 1.1rem; }
+.gta-ed-price { font-family: var(--font-d); font-size: 2rem; font-weight: 900; color: #fff; text-shadow: 0 0 20px rgba(255,45,120,.3); }
+.gta-ed-price-note { font-size: .68rem; color: var(--muted2); margin-bottom: 1.1rem; margin-top: .2rem; }
+.gta-ed-features { list-style: none; margin-bottom: 1.3rem; display: flex; flex-direction: column; gap: .4rem; }
+.gta-ed-features li { font-size: .78rem; color: var(--muted2); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+.gta-ed-features li::before { content: ''; display: inline-block; width: 13px; height: 13px; margin-top: 2px; background-color: #ff5c9a; -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5.5 5.5L20 6.5'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5.5 5.5L20 6.5'/%3E%3C/svg%3E"); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; flex-shrink: 0; }
+.gta-ed-features li.hi { color: var(--white); }
+.gta-ed-features li.hi::before { background-color: var(--cyan); }
+.btn-gta {
+  width: 100%; padding: .85rem; border-radius: 8px; border: none;
+  background: linear-gradient(135deg, #ff2d78, #ff8c00);
+  color: #fff; font-family: var(--font-d); font-size: .72rem; font-weight: 800; letter-spacing: .08em;
+  cursor: pointer; position: relative; z-index: 2; transition: all .25s;
+  box-shadow: 0 0 20px rgba(255,45,120,.3);
+}
+.btn-gta:hover { transform: translateY(-2px); box-shadow: 0 0 35px rgba(255,45,120,.55); }
+
+/* Official facts box */
+.gta-official-box {
+  margin-top: 2rem; background: rgba(0,229,255,.04); border: 1px solid rgba(0,229,255,.15);
+  border-radius: 10px; padding: 1.2rem 1.5rem; display: flex; gap: 12px; align-items: flex-start;
+}
+.gta-official-box p { font-size: .8rem; color: var(--muted2); line-height: 1.7; }
+.gta-official-box p strong { color: var(--cyan); }
+.gta-official-box a { color: var(--cyan); text-decoration: underline; }
+
+/* ============================================
+   FOOTER
+============================================ */
+footer {
+  position: relative; z-index: 2;
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 2rem 2.5rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+footer::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--purple), var(--cyan), transparent);
+}
+.footer-brand { font-family: var(--font-d); font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.footer-brand span { color: var(--purple2); text-shadow: 0 0 15px var(--purple); }
+footer p { font-size: .72rem; color: var(--muted); }
+.footer-links { display: flex; gap: 2rem; }
+.footer-links a { font-family: var(--font-d); font-size: .55rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); transition: color .2s; }
+.footer-links a:hover { color: var(--purple2); }
+
+/* ============================================
+   WA FLOAT
+============================================ */
+.wa-float {
+  position: fixed; bottom: 28px; right: 28px; z-index: 200;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: #25d366;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; border: none; cursor: pointer;
+  box-shadow: 0 0 0 0 rgba(37,211,102,.5);
+  animation: wa-ping 2s ease-in-out infinite;
+}
+@keyframes wa-ping {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(37,211,102,.5); }
+  50% { box-shadow: 0 0 0 12px rgba(37,211,102,0); }
+}
+.wa-float:hover { transform: scale(1.1); }
+
+/* ============================================
+   SCROLL REVEAL
+============================================ */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================
+   RESPONSIVE — TABLET (≤968px)
+============================================ */
+@media (max-width: 968px) {
+  .fc-wrap { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; }
+  .psplus-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .gta-editions-row { grid-template-columns: 1fr; }
+  .gta-teaser-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+  .gta-modal { width: 95vw; max-height: 92vh; }
+  .gta-modal-inner { padding: 2.2rem 1.5rem 1.8rem; }
+  .ml-hero-badge { flex-direction: column; text-align: center; gap: 1.8rem; padding: 2rem; }
+  .ml-stats-row { justify-content: center; }
+  .ml-bottom-banner { flex-direction: column; align-items: flex-start; }
+  .cart-drawer { width: 380px; }
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE (≤768px) — NAV
+============================================ */
+@media (max-width: 768px) {
+  nav { padding: 0 1.2rem; height: 60px; }
+  .nav-brand { font-size: 1.1rem; }
+  .nav-logo img { height: 32px; width: 32px; }
+
+  .nav-burger { display: flex; }
+
+  #nav-links {
+    position: fixed; top: 60px; right: 0; bottom: 0; width: 78vw; max-width: 320px;
+    background: var(--bg2); border-left: 1px solid var(--border);
+    flex-direction: column; align-items: stretch; gap: 0;
+    padding: 1.5rem 1.5rem 2rem;
+    transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
+    z-index: 160; overflow-y: auto;
+  }
+  #nav-links.open { transform: translateX(0); }
+  #nav-links li { width: 100%; }
+  #nav-links li a {
+    display: block; padding: .9rem 0; font-size: .78rem;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  #nav-links li a.nav-cta {
+    margin-top: 1rem; text-align: center; border-bottom: none; border-radius: 6px;
+    padding: .8rem 0;
+  }
+  .nav-mobile-overlay { display: block; }
+
+  .wa-float { width: 52px; height: 52px; font-size: 1.4rem; bottom: 20px; right: 20px; }
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE (≤768px) — SECTIONS
+============================================ */
+@media (max-width: 768px) {
+  .hero { padding: 7rem 1.3rem 3rem; min-height: auto; }
+  .hero h1 { font-size: clamp(2.2rem, 11vw, 3.2rem); }
+  .hero-sub { font-size: .92rem; }
+  .hero-btns { flex-direction: column; align-items: stretch; }
+  .hero-btns a, .hero-btns button { justify-content: center; text-align: center; }
+  .hero-stats { gap: 1.4rem; flex-wrap: wrap; row-gap: 1.4rem; }
+  .stat-val { font-size: 1.5rem; }
+
+  .section, .section-alt, .gta-section, .ml-section { padding: 3.5rem 1.3rem; }
+  .sec-title { font-size: 1.6rem; }
+
+  /* GTA6 */
+  .gta-title { font-size: clamp(2rem, 11vw, 3rem); }
+  .gta-modal-title { font-size: clamp(1.6rem, 9vw, 2.2rem); }
+  .gta-facts { gap: .5rem; }
+  .gta-fact-chip { font-size: .7rem; padding: .45rem .8rem; }
+  .gta-visual { height: 220px; }
+  .gta-teaser-stats { gap: 1.1rem; }
+  .gta-teaser-days { font-size: 2rem; }
+  .gta-teaser-price { font-size: 1.3rem; }
+  .gta-teaser-cta { width: 100%; justify-content: center; }
+  .gta-countdown { gap: .5rem; }
+  .gta-cd-box { min-width: 54px; padding: .6rem .5rem; }
+  .gta-cd-num { font-size: 1.2rem; }
+  .gta-editions-row { gap: 1rem; }
+  .gta-edition-card { padding: 1.4rem; }
+
+  /* FC26 */
+  .fc-editions-grid { grid-template-columns: 1fr; }
+  .fc-title { font-size: clamp(1.8rem, 9vw, 2.6rem); }
+  .fc-img-panel { height: 220px; }
+
+  /* Games */
+  .games-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .8rem; }
+  .game-thumb { height: 140px; }
+  .game-body { padding: .8rem; }
+  .game-title { font-size: .88rem; }
+  .game-desc { display: none; }
+
+  /* PS Plus */
+  .psplus-card { padding: 1.6rem 1.3rem; }
+  .psplus-name { font-size: 1.5rem; }
+  .month-btns { flex-direction: column; }
+  .price-val { font-size: 2.2rem; }
+  .psplus-badge-top { font-size: .5rem; padding: 5px 12px; right: 1rem; }
+
+  /* MercadoLibre */
+  .ml-stats-row { gap: 1.2rem 1.5rem; }
+  .ml-stat { padding-right: 1rem; }
+  .ml-cards-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .ml-cuotas-banner { flex-direction: column; align-items: flex-start; text-align: left; }
+
+  /* Contact */
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+  .contact-channel { padding: .85rem 1rem; }
+
+  /* Footer */
+  footer { padding: 1.6rem 1.3rem; flex-direction: column; text-align: center; gap: 1rem; }
+  .footer-links { gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
+
+  /* Cart drawer full width on small screens */
+  .cart-drawer { width: 100vw; max-width: 100vw; }
+  .cart-item-icon { width: 36px; height: 36px; font-size: 1.4rem; }
+  .cart-item-name { font-size: .68rem; }
+}
+
+/* ============================================
+   RESPONSIVE — SMALL MOBILE (≤420px)
+============================================ */
+@media (max-width: 420px) {
+  .hero-stats { justify-content: space-between; }
+  .stat-lbl { font-size: .58rem; }
+  .games-grid { grid-template-columns: 1fr 1fr; }
+  .ml-cards-grid { grid-template-columns: 1fr 1fr; }
+  .gta-fact-chip { font-size: .65rem; padding: .4rem .65rem; }
+  .gta-cd-box { min-width: 46px; padding: .5rem .35rem; }
+  .gta-cd-num { font-size: 1rem; }
+}
+/* ============================================
+   ICON SYSTEM
+============================================ */
+.icon { display: inline-flex; align-items: center; justify-content: center; line-height: 0; vertical-align: -0.14em; }
+.icon svg { width: 1em; height: 1em; display: block; }
+
+/* ICON SIZE BOOST — make icons clearly recognizable across all contexts */
+.hero-btns .icon svg { width: 18px; height: 18px; }
+nav ul .icon svg { width: 14px; height: 14px; }
+.fc-badge .icon svg, .gta-hero-badge .icon svg { width: 15px; height: 15px; }
+.g-badge .icon svg { width: 12px; height: 12px; }
+.gta-ed-badge-top .icon svg, .psplus-badge-top .icon svg, .plan-top-badge .icon svg { width: 14px; height: 14px; }
+.ml-trust-badge .icon svg { width: 16px; height: 16px; }
+.trust-title .icon svg { width: 17px; height: 17px; }
+.ch-icon svg { width: 21px; height: 21px; }
+.feat-icon svg { width: 16px; height: 16px; }
+.gta-fact-chip .ic svg { width: 16px; height: 16px; }
+.gta-group-title svg { width: 21px; height: 21px; }
+.cart-nav-btn svg { width: 19px; height: 19px; }
+.wa-float svg { width: 29px; height: 29px; }
+.cart-wa-btn svg { width: 23px; height: 23px; }
+.cart-item-icon svg { width: 27px; height: 27px; }
+.cart-close svg, .cart-item-remove svg { width: 16px; height: 16px; }
+.ml-card-icon svg { width: 27px; height: 27px; }
+.ml-medal-inner svg { width: 39px; height: 39px; }
+.ps-alert > .icon svg, .gta-official-box > .icon svg { width: 23px; height: 23px; }
+.fc-edition svg, .btn-gta svg, .btn-card svg, .plan-cta svg { width: 16px; height: 16px; }
+.cart-toast .icon svg { width: 16px; height: 16px; }
+.cart-empty-icon svg { width: 52px; height: 52px; }
+</style>
+</head>
+<body>
+
+<!-- GALAXY BACKGROUND -->
+<canvas id="galaxy-canvas"></canvas>
+
+<!-- CART TOAST -->
+<div class="cart-toast" id="cart-toast"><span class="icon" data-icon="check" style="color:var(--green);margin-right:6px;"></span>Producto agregado al carrito</div>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+
+<!-- CART DRAWER -->
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-header">
+    <div class="cart-title"><span class="icon" data-icon="cart"></span> Tu carrito</div>
+    <button class="cart-close" onclick="closeCart()"><span class="icon" data-icon="close"></span></button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty" id="cart-empty">
+      <div class="cart-empty-icon icon" data-icon="cart"></div>
+      <div class="cart-empty-txt">Tu carrito está vacío.<br>Agregá productos para continuar.</div>
+    </div>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none;">
+    <div class="cart-total-row">
+      <div class="cart-total-lbl">Total a pagar</div>
+      <div class="cart-total-val" id="cart-total">$0</div>
+    </div>
+    <button class="cart-wa-btn" onclick="checkoutWA()">
+      <span class="icon" data-icon="chat" style="font-size:1.2rem"></span> Comprar por WhatsApp
+    </button>
+    <button class="cart-clear-btn" onclick="clearCart()">Vaciar carrito</button>
+  </div>
+</div>
+
+<!-- WA FLOAT -->
+<a href="https://wa.me/541123860254?text=Hola!%20Quisiera%20consultar%20sobre%20juegos%20y%20PS%20Plus" target="_blank" class="wa-float"><span class="icon" data-icon="chat"></span></a>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="data:image/png;base64,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" alt="Galaxy Games Logo">
+    <div class="nav-brand">Galaxy<span>Games</span></div>
+  </a>
+  <ul id="nav-links">
+    <li><a href="#gta6" style="color:#ff5c9a;"><span class="icon" data-icon="flame"></span> GTA VI</a></li>
+    <li><a href="#psplus">PS Plus</a></li>
+    <li><a href="#fc26">FC 26</a></li>
+    <li><a href="#juegos">Juegos AAA</a></li>
+    <li><a href="#mercadolibre">MercadoLibre</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+    <li><a href="https://wa.me/541123860254" target="_blank" class="nav-cta">WhatsApp</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-nav-btn" onclick="openCart()" title="Ver carrito"><span class="icon" data-icon="cart"></span><span class="cart-count" id="cart-count">0</span></button>
+    <button class="nav-burger" id="nav-burger" onclick="toggleMobileNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile-overlay" id="nav-mobile-overlay" onclick="closeMobileNav()"></div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-scanline"></div>
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+
+  <div class="hero-tag">Tienda Digital PlayStation · Argentina</div>
+  <h1>
+    Tu universo<br>
+    <span class="line2">gamer</span><br>
+    <span class="glitch">comienza acá.</span>
+  </h1>
+  <p class="hero-sub">Videojuegos digitales PS4/PS5, PS Plus Deluxe y preventa de GTA VI al mejor precio. Activación inmediata. 100% original.</p>
+  <div class="hero-btns">
+    <a href="#gta6" class="btn-primary" style="background:linear-gradient(135deg,#ff2d78,#ff8c00);box-shadow:0 0 25px rgba(255,45,120,.4);"><span class="icon" data-icon="flame"></span> Preventa GTA VI</a>
+    <a href="#psplus" class="btn-outline"><span class="icon" data-icon="gamepad"></span> PS Plus Deluxe</a>
+    <a href="#fc26" class="btn-outline"><span class="icon" data-icon="soccer"></span> FC 26 →</a>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-val">100<span>%</span></div><div class="stat-lbl">Original</div></div>
+    <div><div class="stat-val">24<span>hs</span></div><div class="stat-lbl">Activación</div></div>
+    <div><div class="stat-val">5<span><span class="icon" data-icon="star" style="color:var(--gold, #f0b840)"></span></span></div><div class="stat-lbl">Calificación</div></div>
+    <div><div class="stat-val"><span class="icon" data-icon="shield"></span></div><div class="stat-lbl">Garantía</div></div>
+  </div>
+</section>
+
+<!-- ===== GTA 6 PREVENTA — TEASER ===== -->
+<section class="gta-section" id="gta6">
+  <div class="gta-bg-glow1"></div>
+  <div class="gta-bg-glow2"></div>
+
+  <div class="gta-teaser-grid">
+    <div style="position:relative;z-index:2;">
+      <div class="gta-hero-badge"><span class="icon" data-icon="flame"></span> Preventa abierta · Rockstar Games</div>
+      <div class="gta-title">GRAND THEFT<br class="line2"><span class="gta-vi">AUTO VI</span></div>
+      <p class="gta-subtitle">El lanzamiento más esperado de la historia de los videojuegos. Reservá tu copia digital ahora y asegurate el <strong>Vintage Vice City Pack</strong> de regalo, exclusivo para quienes precompran antes del 20 de noviembre.</p>
+
+      <div class="gta-teaser-stats">
+        <div>
+          <div class="gta-teaser-days"><span id="teaser-days">--</span></div>
+          <div class="gta-teaser-days-lbl">Días para el lanzamiento</div>
+        </div>
+        <div class="gta-teaser-divider"></div>
+        <div>
+          <div class="gta-teaser-price">Desde $34.999</div>
+          <div class="gta-teaser-days-lbl">Precio de preventa</div>
+        </div>
+      </div>
+
+      <button class="btn-primary gta-teaser-cta" onclick="openGTAModal()" style="background:linear-gradient(135deg,#ff2d78,#ff8c00);box-shadow:0 0 25px rgba(255,45,120,.4);border:none;">
+        <span class="icon" data-icon="gift"></span> Ver precios y detalles completos →
+      </button>
+    </div>
+
+    <div class="gta-visual">
+      <div class="gta-video-bg">
+        <iframe src="https://www.youtube.com/embed/VQRLujxTm3c?autoplay=1&mute=1&loop=1&playlist=VQRLujxTm3c&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&fs=0"
+          title="GTA VI — Trailer 2 oficial Rockstar Games" frameborder="0"
+          allow="autoplay; encrypted-media" loading="lazy"></iframe>
+      </div>
+      <div class="gta-visual-fallback">
+        <div class="gta-sun"></div>
+      </div>
+      <div class="gta-video-overlay"></div>
+      <div class="gta-logo-text">GTA<span>VI</span></div>
+      <div class="gta-tagline">Vice City · Leonida</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GTA 6 MODAL — FULL DETAILS ===== -->
+<div class="gta-modal-overlay" id="gta-modal-overlay" onclick="closeGTAModal()"></div>
+<div class="gta-modal" id="gta-modal">
+  <div class="gta-modal-inner">
+    <button class="gta-modal-close" onclick="closeGTAModal()"><span class="icon" data-icon="close"></span></button>
+
+    <div class="gta-hero-badge"><span class="icon" data-icon="flame"></span> Preventa abierta · Rockstar Games</div>
+    <div class="gta-modal-title">GRAND THEFT AUTO <span class="gta-vi">VI</span></div>
+    <p class="gta-subtitle" style="margin-bottom:1.6rem;">Toda la información oficial, ediciones disponibles y precios de preventa para Argentina.</p>
+
+    <div class="gta-facts">
+      <div class="gta-fact-chip"><span class="ic icon" data-icon="calendar"></span> Lanza el <strong>19 de noviembre, 2026</strong></div>
+      <div class="gta-fact-chip"><span class="ic icon" data-icon="gamepad"></span> <strong>PS5</strong> exclusivo</div>
+      <div class="gta-fact-chip"><span class="ic icon" data-icon="palm"></span> <strong>Leonida</strong> · Vice City</div>
+      <div class="gta-fact-chip"><span class="ic icon" data-icon="gift"></span> Bonus de preventa incluido</div>
+    </div>
+
+    <div class="gta-countdown-wrap">
+      <div class="gta-countdown-label"><span class="icon" data-icon="clock"></span> Faltan para el lanzamiento</div>
+      <div class="gta-countdown" id="gta-countdown">
+        <div class="gta-cd-box"><div class="gta-cd-num" id="cd-days">--</div><div class="gta-cd-lbl">Días</div></div>
+        <div class="gta-cd-box"><div class="gta-cd-num" id="cd-hours">--</div><div class="gta-cd-lbl">Hs</div></div>
+        <div class="gta-cd-box"><div class="gta-cd-num" id="cd-mins">--</div><div class="gta-cd-lbl">Min</div></div>
+        <div class="gta-cd-box"><div class="gta-cd-num" id="cd-secs">--</div><div class="gta-cd-lbl">Seg</div></div>
+      </div>
+    </div>
+
+    <!-- STANDARD EDITION -->
+    <div class="gta-edition-group">
+      <div class="gta-group-title">
+        <span class="icon" data-icon="gamepad"></span> GTA VI — Standard Edition
+        <span class="line"></span>
+        <span class="usd-tag">Oficial: USD $79.99</span>
+      </div>
+      <div class="gta-editions-row">
+        <div class="gta-edition-card primary">
+          <div class="gta-ed-badge-top"><span class="icon" data-icon="star"></span> Recomendada</div>
+          <div class="gta-ed-type"><span class="icon" data-icon="medal1"></span> Cuenta Primaria</div>
+          <div class="gta-ed-name">GTA VI Standard Edition</div>
+          <div class="gta-ed-sub">Jugás siempre desde tu propia cuenta PSN</div>
+          <div class="gta-ed-price">$59.999</div>
+          <div class="gta-ed-price-note">Precio de preventa · pago único</div>
+          <ul class="gta-ed-features">
+            <li class="hi">Jugás desde tu cuenta personal, no una prestada</li>
+            <li class="hi">Trofeos y logros quedan guardados en tu usuario</li>
+            <li>Experiencia completa un jugador (Jason & Lucia)</li>
+            <li>Vintage Vice City Pack de regalo</li>
+            <li>1 mes de GTA+ incluido</li>
+            <li>Preload disponible desde el 12 de noviembre</li>
+          </ul>
+          <button class="btn-gta" onclick="addToCart('palm','GTA VI Standard · Primaria','PS5 · Preventa · Digital',59999)"><span class="icon" data-icon="cart"></span> Reservar ahora</button>
+        </div>
+
+        <div class="gta-edition-card">
+          <div class="gta-ed-type secondary"><span class="icon" data-icon="medal2"></span> Cuenta Secundaria</div>
+          <div class="gta-ed-name">GTA VI Standard Edition</div>
+          <div class="gta-ed-sub">Jugás desde la cuenta que te proporcionamos</div>
+          <div class="gta-ed-price">$34.999</div>
+          <div class="gta-ed-price-note">Precio de preventa · pago único</div>
+          <ul class="gta-ed-features">
+            <li>Mismo juego completo, precio más accesible</li>
+            <li>Experiencia completa un jugador (Jason & Lucia)</li>
+            <li>Vintage Vice City Pack de regalo</li>
+            <li>1 mes de GTA+ incluido</li>
+            <li>Garantía sobre la cuenta durante el acceso</li>
+            <li>Preload disponible desde el 12 de noviembre</li>
+          </ul>
+          <button class="btn-gta" onclick="addToCart('palm','GTA VI Standard · Secundaria','PS5 · Preventa · Digital',34999)"><span class="icon" data-icon="cart"></span> Reservar ahora</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ULTIMATE EDITION -->
+    <div class="gta-edition-group">
+      <div class="gta-group-title">
+        <span class="icon" data-icon="crown"></span> GTA VI — Ultimate Edition
+        <span class="line"></span>
+        <span class="usd-tag">Oficial: USD $99.99</span>
+      </div>
+      <div class="gta-editions-row">
+        <div class="gta-edition-card primary">
+          <div class="gta-ed-badge-top"><span class="icon" data-icon="crown"></span> La más completa</div>
+          <div class="gta-ed-type"><span class="icon" data-icon="medal1"></span> Cuenta Primaria</div>
+          <div class="gta-ed-name">GTA VI Ultimate Edition</div>
+          <div class="gta-ed-sub">Jugás siempre desde tu propia cuenta PSN</div>
+          <div class="gta-ed-price">$74.999</div>
+          <div class="gta-ed-price-note">Precio de preventa · pago único</div>
+          <ul class="gta-ed-features">
+            <li class="hi">Jugás desde tu cuenta personal, no una prestada</li>
+            <li class="hi">Trofeos y logros quedan guardados en tu usuario</li>
+            <li>Todo lo de la Standard Edition</li>
+            <li>Vehículos premium exclusivos (Grotti Cheetah, Dinka Enduro, Crest Kayak)</li>
+            <li>Vintage Vice City Pack de regalo</li>
+            <li>1 mes de GTA+ incluido</li>
+          </ul>
+          <button class="btn-gta" onclick="addToCart('crown','GTA VI Ultimate · Primaria','PS5 · Preventa · Digital',74999)"><span class="icon" data-icon="cart"></span> Reservar ahora</button>
+        </div>
+
+        <div class="gta-edition-card">
+          <div class="gta-ed-type secondary"><span class="icon" data-icon="medal2"></span> Cuenta Secundaria</div>
+          <div class="gta-ed-name">GTA VI Ultimate Edition</div>
+          <div class="gta-ed-sub">Jugás desde la cuenta que te proporcionamos</div>
+          <div class="gta-ed-price">$49.999</div>
+          <div class="gta-ed-price-note">Precio de preventa · pago único</div>
+          <ul class="gta-ed-features">
+            <li>Mismo contenido completo, precio más accesible</li>
+            <li>Todo lo de la Standard Edition</li>
+            <li>Vehículos premium exclusivos incluidos</li>
+            <li>Vintage Vice City Pack de regalo</li>
+            <li>1 mes de GTA+ incluido</li>
+            <li>Garantía sobre la cuenta durante el acceso</li>
+          </ul>
+          <button class="btn-gta" onclick="addToCart('crown','GTA VI Ultimate · Secundaria','PS5 · Preventa · Digital',49999)"><span class="icon" data-icon="cart"></span> Reservar ahora</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="gta-official-box">
+      <span class="icon" data-icon="info"></span>
+      <p><strong>Info oficial confirmada por Rockstar Games:</strong> GTA VI lanza el 19 de noviembre de 2026 exclusivamente para PS5 y Xbox Series X|S. Precio oficial internacional: Standard Edition USD $79.99 / Ultimate Edition USD $99.99. Ambientado en Leonida, con Vice City como ciudad central, protagonizado por Jason Duval y Lucia Caminos. Todo pre-order realizado antes del 20/11/2026 recibe el <strong>Vintage Vice City Pack</strong> gratis. Nuestros precios en preventa son en cuenta digital para Argentina — <strong>sujetos a confirmación final</strong> según el tipo de cambio al momento del lanzamiento.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PS PLUS DELUXE ===== -->
+<section class="section" id="psplus">
+  <div class="ps-top reveal">
+    <div class="ps-icon">PS+</div>
+    <div>
+      <div class="ps-heading">PlayStation Plus Deluxe</div>
+      <div class="ps-heading-sub">El plan más completo — cuenta compartida · beneficios en tu cuenta personal</div>
+    </div>
+  </div>
+
+  <div class="ps-alert reveal">
+    <span class="icon" data-icon="info"></span>
+    <p>Vendemos <span>PS Plus Deluxe</span> mediante <span>cuenta compartida</span>. Todos los beneficios (catálogo de +700 juegos, multijugador, descuentos, clásicos) se reflejan en tu <span>cuenta personal</span>. <span>Garantía total</span> por los meses contratados, contenido 100% original de la web oficial de PlayStation.</p>
+  </div>
+
+  <div class="psplus-card reveal">
+    <div class="psplus-badge-top"><span class="icon" data-icon="star"></span> Plan incluido</div>
+    <div class="psplus-inner">
+      <div class="psplus-left">
+        <div class="psplus-icon">PS+</div>
+        <div class="psplus-tier">Plan</div>
+        <div class="psplus-name">PS Plus Deluxe</div>
+
+        <div class="month-selector">
+          <div class="month-label">Elegí tu período</div>
+          <div class="month-btns">
+            <button class="mth-btn active" onclick="setMonth('3')">
+              <span>3 meses<span class="sub-text">$36.000</span></span>
+            </button>
+            <button class="mth-btn" onclick="setMonth('12')">
+              <span>12 meses<span class="sub-text">$64.000 · Mejor precio</span></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="price-display">
+          <div class="price-val active" id="price-3">$36.000</div>
+          <div class="price-val" id="price-12">$64.000</div>
+          <div class="price-sub" id="price-sub">/3 meses</div>
+        </div>
+        <div class="price-note" id="price-note">Pago único — sin renovación automática</div>
+
+        <button class="plan-cta" id="psplus-cta-btn" onclick="addPSPlus()">Suscribirme — Agregar <span class="icon" data-icon="cart"></span></button>
+      </div>
+
+      <div>
+        <ul class="psplus-features">
+          <li class="hi"><span class="feat-icon icon" data-icon="gamepad"></span>+700 juegos en catálogo total</li>
+          <li class="hi"><span class="feat-icon icon" data-icon="gamepad"></span>Juegos PS4, PS5, PS1, PS2, PS3, PSP</li>
+          <li class="hi"><span class="feat-icon icon" data-icon="globe"></span>Multijugador online</li>
+          <li class="hi"><span class="feat-icon icon" data-icon="gift"></span>Juegos gratis nuevos cada mes</li>
+          <li><span class="feat-icon icon" data-icon="coin"></span>Descuentos exclusivos en PS Store</li>
+          <li><span class="feat-icon icon" data-icon="clock"></span>Pruebas de tiempo limitado</li>
+          <li><span class="feat-icon icon" data-icon="cloud"></span>100 GB almacenamiento en nube</li>
+          <li><span class="feat-icon icon" data-icon="monitor"></span>PlayStation Now streaming</li>
+          <li><span class="feat-icon icon" data-icon="trophy"></span>Juegos clásicos remasterizados</li>
+          <li><span class="feat-icon icon" data-icon="shield"></span>Garantía por los meses contratados</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="psplus-guarantee">
+      <span class="icon" data-icon="shield"></span> <strong>Garantía Galaxy Games</strong> — La suscripción se realiza mediante cuenta compartida (sistema oficial de PlayStation). Los beneficios como el catálogo, multijugador y descuentos se comparten a tu cuenta personal. Si surgiera cualquier inconveniente durante el período contratado, lo solucionamos o te devolvemos el dinero. <strong>100% original de la web de PlayStation.</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FC 26 ===== -->
+<section class="section" id="fc26">
+  <div class="sec-eyebrow reveal">Lanzamiento destacado</div>
+  <div class="sec-title reveal">EA Sports FC 26</div>
+  <p class="sec-sub reveal">El fútbol más real de la historia, ahora disponible en PS4 y PS5.</p>
+
+  <div class="fc-wrap reveal">
+    <div>
+      <div class="fc-badge-wrap">
+        <span class="fc-badge"><span class="icon" data-icon="soccer"></span> Disponible ahora</span>
+      </div>
+      <div class="fc-title">FC 26<br><span>Dominá el juego</span></div>
+      <p class="fc-desc">HyperMotionV, nueva IA de compañeros, porteros revolucionados y el modo FC IQ. La experiencia de fútbol más completa en PlayStation.</p>
+      <div class="fc-editions-grid">
+        <div class="fc-edition">
+          <div class="ed-eyebrow">Cuenta Primaria</div>
+          <div class="ed-type primary">Primaria</div>
+          <div class="ed-name">FC 26 Standard</div>
+          <div class="ed-platform">PS4 / PS5</div>
+          <div class="ed-price">$11.999</div>
+          <button onclick="addToCart('soccer','FC 26 Standard · Primaria','PS4/PS5 · Digital',11999)" style="margin-top:1rem;padding:.6rem 1.2rem;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;border:none;border-radius:6px;font-family:var(--font-d);font-size:.65rem;font-weight:700;letter-spacing:.08em;cursor:pointer;width:100%;position:relative;z-index:2;"><span class="icon" data-icon="cart"></span> Agregar al carrito</button>
+        </div>
+        <div class="fc-edition">
+          <div class="ed-eyebrow">Cuenta Secundaria</div>
+          <div class="ed-type">Secundaria</div>
+          <div class="ed-name">FC 26 Standard</div>
+          <div class="ed-platform">PS4 / PS5</div>
+          <div class="ed-price">$7.499</div>
+          <button onclick="addToCart('soccer','FC 26 Standard · Secundaria','PS4/PS5 · Digital',7499)" style="margin-top:1rem;padding:.6rem 1.2rem;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;border:none;border-radius:6px;font-family:var(--font-d);font-size:.65rem;font-weight:700;letter-spacing:.08em;cursor:pointer;width:100%;position:relative;z-index:2;"><span class="icon" data-icon="cart"></span> Agregar al carrito</button>
+        </div>
+      </div>
+    </div>
+    <div class="fc-img-panel">
+      <img src="https://image.api.playstation.com/vulcan/ap/rnd/202502/2016/9db06ae7e16bc10716f0cff76ecb80fdb6c3dcb3f25e18b9.png"
+           onerror="this.style.display='none';" alt="FC 26">
+      <div class="fallback"><span class="icon" data-icon="soccer" style="font-size:4rem;"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== JUEGOS AAA ===== -->
+<section class="section section-alt" id="juegos">
+  <div class="sec-eyebrow reveal">Catálogo PlayStation</div>
+  <div class="sec-title reveal">Juegos más vendidos</div>
+  <p class="sec-sub reveal">Activación digital inmediata en tu cuenta PSN · PS4 y PS5</p>
+
+  <div class="games-grid">
+
+    <div class="game-card reveal">
+      <div class="game-thumb">
+        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/1c7b75d8935a99f4e4fe0e4d3a893243adfe5baeacb34b8c.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Spider-Man 2">
+        <div class="fallback" style="display:none;background:linear-gradient(135deg,#1a003a,#3a0060);"><span class="icon" data-icon="spider" style="font-size:4rem"></span></div>
+        <div class="g-badge b-top">Popular</div>
+        <div class="g-platform">PS5</div>
+        <div class="game-scan"></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">Acción · Mundo abierto</div>
+        <div class="game-title">Marvel's Spider-Man 2</div>
+        <div class="game-desc">Peter Parker y Miles Morales en la aventura más épica de Nueva York.</div>
+        <div class="game-footer"><div class="game-price">$8.999</div><button class="btn-card" onclick="addToCart('spider','Spider-Man 2','PS5 · Digital',8999)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-thumb">
+        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202211/2222/l8QTN7ThQK3lRBHhB3nkISbU.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="God of War">
+        <div class="fallback" style="display:none;background:linear-gradient(135deg,#001a30,#002a50);"><span class="icon" data-icon="axe" style="font-size:4rem"></span></div>
+        <div class="g-badge b-hot"><span class="icon" data-icon="flame"></span> Top</div>
+        <div class="g-platform">PS5 / PS4</div>
+        <div class="game-scan"></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">Aventura · Acción</div>
+        <div class="game-title">God of War Ragnarök</div>
+        <div class="game-desc">Kratos y Atreus enfrentan el fin de los mundos en la secuela definitiva.</div>
+        <div class="game-footer"><div class="game-price">$9.499</div><button class="btn-card" onclick="addToCart('axe','God of War Ragnarök','PS5/PS4 · Digital',9499)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-thumb">
+        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202110/2000/phvVT0qZfcRms5qDAk0SI3CM.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Elden Ring">
+        <div class="fallback" style="display:none;background:linear-gradient(135deg,#1a1000,#3a2000);"><span class="icon" data-icon="sword" style="font-size:4rem"></span></div>
+        <div class="g-badge b-sale">Oferta</div>
+        <div class="g-platform">PS5 / PS4</div>
+        <div class="game-scan"></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">RPG · Souls-like</div>
+        <div class="game-title">Elden Ring</div>
+        <div class="game-desc">El RPG de acción más premiado. Explorá The Lands Between.</div>
+        <div class="game-footer"><div class="game-price"><span class="old">$6.999</span>$5.499</div><button class="btn-card" onclick="addToCart('sword','Elden Ring','PS5/PS4 · Digital',5499)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-thumb">
+        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202207/0722/Tnk6UF3KU2eTdPLBRTLCkR7r.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Gran Turismo 7">
+        <div class="fallback" style="display:none;background:linear-gradient(135deg,#001520,#002535);"><span class="icon" data-icon="car" style="font-size:4rem"></span></div>
+        <div class="g-badge b-sale">Oferta</div>
+        <div class="g-platform">PS5 / PS4</div>
+        <div class="game-scan"></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">Racing · Simulación</div>
+        <div class="game-title">Gran Turismo 7</div>
+        <div class="game-desc">+400 autos y 90 circuitos. La experiencia de conducción definitiva.</div>
+        <div class="game-footer"><div class="game-price"><span class="old">$8.499</span>$5.999</div><button class="btn-card" onclick="addToCart('car','Gran Turismo 7','PS5/PS4 · Digital',5999)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-thumb">
+        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202306/0322/7759a7a5d85ef7b6ab700b547e4e6a5ce2e3b5d8.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="FF XVI">
+        <div class="fallback" style="display:none;background:linear-gradient(135deg,#100020,#200040);"><span class="icon" data-icon="moon" style="font-size:4rem"></span></div>
+        <div class="g-badge b-new">Nuevo</div>
+        <div class="g-platform">PS5</div>
+        <div class="game-scan"></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">RPG · Acción</div>
+        <div class="game-title">Final Fantasy XVI</div>
+        <div class="game-desc">Un mundo en guerra por los cristales del éter. Pura magia en PS5.</div>
+        <div class="game-footer"><div class="game-price">$8.199</div><button class="btn-card" onclick="addToCart('moon','Final Fantasy XVI','PS5 · Digital',8199)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+      </div>
+    </div>
+
+    <div class="game-card reveal">
+      <div class="game-thumb">
+        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202406/1015/ae9f8b6f2c5d3a7e1b0c4f8d2e6a9b3c.png"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Helldivers 2">
+        <div class="fallback" style="display:none;background:linear-gradient(135deg,#0a0f00,#1a2000);"><span class="icon" data-icon="helmet" style="font-size:4rem"></span></div>
+        <div class="g-badge b-hot"><span class="icon" data-icon="flame"></span> Viral</div>
+        <div class="g-platform">PS5</div>
+        <div class="game-scan"></div>
+      </div>
+      <div class="game-body">
+        <div class="game-genre">Acción · Co-op</div>
+        <div class="game-title">Helldivers 2</div>
+        <div class="game-desc">El juego cooperativo más explosivo del año. Defendé la democracia.</div>
+        <div class="game-footer"><div class="game-price">$6.999</div><button class="btn-card" onclick="addToCart('helmet','Helldivers 2','PS5 · Digital',6999)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== MERCADOLIBRE ===== -->
+<section class="ml-section" id="mercadolibre">
+  <div class="sec-eyebrow reveal">Verificación externa</div>
+  <div class="sec-title reveal">MercadoLíder en MercadoLibre</div>
+  <p class="sec-sub reveal">Encontranos en MercadoLibre y verificá nuestra reputación en tiempo real.</p>
+
+  <!-- HERO BADGE -->
+  <div class="ml-hero-badge reveal">
+    <div class="ml-leader-badge">
+      <div class="ml-medal">
+        <div class="ml-medal-inner icon" data-icon="trophy"></div>
+      </div>
+      <div class="ml-leader-title">MercadoLíder</div>
+      <div class="ml-leader-sub">Categoría Platinum</div>
+    </div>
+
+    <div class="ml-stats-row">
+      <div class="ml-stat">
+        <div class="ml-stat-val"><span id="cnt-sales">+500</span></div>
+        <div class="ml-stat-lbl">Ventas realizadas</div>
+      </div>
+      <div class="ml-stat">
+        <div class="ml-stat-val"><span class="icon" data-icon="star" style="color:#ffd700"></span> <span style="color:var(--white)">5.0</span></div>
+        <div class="ml-stat-lbl">Calificación</div>
+      </div>
+      <div class="ml-stat">
+        <div class="ml-stat-val"><span style="color:var(--green)">99<span style="font-size:1.2rem">%</span></span></div>
+        <div class="ml-stat-lbl">Positivas</div>
+      </div>
+      <div class="ml-stat">
+        <div class="ml-stat-val"><span style="color:var(--cyan)">24hs</span></div>
+        <div class="ml-stat-lbl">Respuesta</div>
+      </div>
+    </div>
+
+    <div class="ml-cta-wrap">
+      <a href="https://www.mercadolibre.com.ar/pagina/galaxygames_" target="_blank">
+        <button class="ml-cta-btn">
+          <span class="icon" data-icon="cart" style="font-size:1.2rem"></span>
+          Ver tienda en ML
+        </button>
+      </a>
+      <div class="ml-cta-sub">Abre en MercadoLibre.com.ar</div>
+    </div>
+  </div>
+
+  <!-- PRODUCT PREVIEW CARDS — solo membresías -->
+  <div class="ml-preview-title reveal">Nuestras membresías en MercadoLibre</div>
+  <div class="ml-cards-grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));">
+    <div class="ml-card reveal">
+      <div class="ml-card-icon icon" data-icon="gamepad"></div>
+      <div class="ml-card-name">PS Plus Deluxe — 3 meses</div>
+      <div class="ml-card-sold">+200 vendidos</div>
+      <div class="ml-card-stars"><span class="icon" data-icon="star"></span><span class="icon" data-icon="star"></span><span class="icon" data-icon="star"></span><span class="icon" data-icon="star"></span><span class="icon" data-icon="star"></span></div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;">
+        <div class="ml-card-badge">Mejor vendido</div>
+        <div class="ml-card-badge" style="background:rgba(0,255,157,.1);border-color:rgba(0,255,157,.3);color:var(--green);">12 cuotas s/interés</div>
+      </div>
+    </div>
+    <div class="ml-card reveal">
+      <div class="ml-card-icon icon" data-icon="trophy"></div>
+      <div class="ml-card-name">PS Plus Deluxe — 12 meses</div>
+      <div class="ml-card-sold">+150 vendidos</div>
+      <div class="ml-card-stars"><span class="icon" data-icon="star"></span><span class="icon" data-icon="star"></span><span class="icon" data-icon="star"></span><span class="icon" data-icon="star"></span><span class="icon" data-icon="star"></span></div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;">
+        <div class="ml-card-badge">MercadoLíder</div>
+        <div class="ml-card-badge" style="background:rgba(0,255,157,.1);border-color:rgba(0,255,157,.3);color:var(--green);">12 cuotas s/interés</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUOTAS SIN INTERES BANNER -->
+  <div class="ml-cuotas-banner reveal">
+    <div class="ml-cuotas-icon icon" data-icon="creditcard"></div>
+    <div class="ml-cuotas-text">
+      <div class="ml-cuotas-title">Cuotas sin interés disponibles en ML</div>
+      <div class="ml-cuotas-sub">Pagá la membresía PS Plus Deluxe en hasta <span>12 cuotas sin interés</span> con tarjetas seleccionadas a través de MercadoLibre. Los precios en ML pueden diferir levemente de los de esta web.</div>
+    </div>
+    <a href="https://www.mercadolibre.com.ar/pagina/galaxygames_" target="_blank">
+      <button class="ml-cuotas-btn">Ver cuotas en ML →</button>
+    </a>
+  </div>
+
+  <!-- BOTTOM BANNER -->
+  <div class="ml-bottom-banner reveal">
+    <div class="ml-banner-text">
+      <h3>Comprá con cuotas por <span>MercadoLibre</span></h3>
+      <p>Si preferís pagar en cuotas sin interés, encontrás nuestras membresías PS Plus Deluxe en MercadoLibre. Misma calidad y garantía, con la protección al comprador de la plataforma. <strong style="color:var(--gold)">Los precios en ML pueden ser un poco más altos</strong> por las comisiones de la plataforma.</p>
+    </div>
+    <div class="ml-banner-badges">
+      <div class="ml-trust-badge"><span class="icon" data-icon="trophy"></span> <span>MercadoLíder</span></div>
+      <div class="ml-trust-badge"><span class="icon" data-icon="shield"></span> <span>Compra protegida</span></div>
+      <div class="ml-trust-badge"><span class="icon" data-icon="creditcard"></span> <span>12 cuotas s/interés</span></div>
+      <div class="ml-trust-badge"><span class="icon" data-icon="star"></span> <span>5 estrellas</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACTO ===== -->
+<section class="section section-alt" id="contacto">
+  <div class="sec-eyebrow reveal">Contacto</div>
+  <div class="sec-title reveal">¿Querés comprar?</div>
+  <p class="sec-sub reveal">Respondemos al instante por WhatsApp. También podés escribirnos por Instagram o email.</p>
+
+  <div class="contact-grid">
+    <div class="contact-form-wrap reveal">
+      <div class="field-group field-row">
+        <div>
+          <label class="field-label">Nombre</label>
+          <input type="text" class="field" placeholder="Tu nombre">
+        </div>
+        <div>
+          <label class="field-label">Email</label>
+          <input type="email" class="field" placeholder="tu@email.com">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">¿Qué te interesa?</label>
+        <input type="text" class="field" placeholder="Ej: FC 26 primaria, PS Plus 3 meses, Elden Ring...">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Mensaje</label>
+        <textarea class="field" placeholder="Consultá lo que quieras, estamos para ayudarte."></textarea>
+      </div>
+      <a href="mailto:galaxygames.arg@gmail.com">
+        <button class="submit-btn">Enviar consulta →</button>
+      </a>
+      <p style="margin-top:.8rem;font-size:.72rem;color:var(--muted);text-align:center;font-family:var(--font-d);letter-spacing:.06em;">O contactanos directo por WhatsApp para respuesta inmediata</p>
+    </div>
+
+    <div class="contact-info reveal">
+      <a href="https://wa.me/541123860254?text=Hola!%20Quiero%20consultar" target="_blank">
+        <div class="contact-channel">
+          <div class="ch-icon icon" data-icon="chat"></div>
+          <div><div class="ch-label">WhatsApp</div><div class="ch-val">+54 11 2386-0254</div></div>
+        </div>
+      </a>
+      <a href="mailto:galaxygames.arg@gmail.com">
+        <div class="contact-channel">
+          <div class="ch-icon icon" data-icon="mail"></div>
+          <div><div class="ch-label">Email</div><div class="ch-val">galaxygames.arg@gmail.com</div></div>
+        </div>
+      </a>
+      <a href="https://instagram.com/galaxygames_ar" target="_blank">
+        <div class="contact-channel">
+          <div class="ch-icon icon" data-icon="camera"></div>
+          <div><div class="ch-label">Instagram</div><div class="ch-val">@galaxygames_ar</div></div>
+        </div>
+      </a>
+      <div class="contact-channel">
+        <div class="ch-icon icon" data-icon="pin"></div>
+        <div><div class="ch-label">Ubicación</div><div class="ch-val">Argentina · GMT-3</div></div>
+      </div>
+
+      <div class="trust-box">
+        <div class="trust-title"><span class="icon" data-icon="shield"></span> Por qué elegirnos</div>
+        <ul class="trust-list">
+          <li>Activación inmediata tras confirmar el pago</li>
+          <li>Productos 100% originales de PlayStation</li>
+          <li>Garantía total por el período contratado</li>
+          <li>Atención personalizada por WhatsApp</li>
+          <li>Cientos de clientes satisfechos en Argentina</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-brand">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6AQUDiYk..." alt="" style="height:24px;opacity:.8;">
+    Galaxy<span>Games</span>
+  </div>
+  <p>© 2025 Galaxy Games · Argentina · Todos los derechos reservados</p>
+  <div class="footer-links">
+    <a href="#gta6" style="color:#ff5c9a;">GTA VI</a>
+    <a href="#psplus">PS Plus</a>
+    <a href="#fc26">FC 26</a>
+    <a href="#juegos">Juegos</a>
+    <a href="#mercadolibre">MercadoLibre</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+/* ============================================
+   ICON SYSTEM — SVG icon set (replaces emoji)
+============================================ */
+const ICONS = {
+  cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2.5 3h2l2.4 12.1a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 8H6"/></svg>',
+  gamepad: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="11.5" r="1"/><circle cx="18.5" cy="14" r="1"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s-4.5 5-4.5 9.5a4.5 4.5 0 0 0 9 0c0-1.6-.7-2.8-1.4-3.8.2 1.6-.9 2.6-1.8 2.6-1.1 0-1.8-1-1.3-2.6C12.3 6.3 12 4 12 2z"/><path d="M8.2 14a3.8 3.8 0 0 0 7.6 0"/></svg>',
+  soccer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.2l3.3 2.4-1.3 3.9H10l-1.3-3.9z"/><path d="M12 7.2V4M15.7 9.6l3-1.6M8.3 9.6l-3-1.6M10 13.5l-2 3.6M14 13.5l2 3.6"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3v5.2c0 5-3.2 8.7-7.5 10.3-4.3-1.6-7.5-5.3-7.5-10.3V5.5z"/><path d="M8.5 12l2.3 2.3L15.8 9.2"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.65" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>',
+  crown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linejoin="round"><path d="M3 8l4 4 5-7 5 7 4-4-2 10H5z"/><path d="M5 20h14"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 5H5a3 3 0 0 0 3 5M16 5h3a3 3 0 0 1-3 5"/><path d="M12 13v3M9 20h6M9 20l.5-2h5l.5 2"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4c-1.4 0-2.7-.3-3.9-.9L4 20l1-4.4a8.4 8.4 0 1 1 16-4.1z"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.5l2.9 6 6.6.6-5 4.4 1.5 6.5L12 16.9 6 20l1.5-6.5-5-4.4 6.6-.6z"/></svg>',
+  palm: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V11"/><path d="M12 11c0-3-2-5-5-5.5C8 8 10 9.5 12 10"/><path d="M12 11c0-3 2-5 5-5.5C16 8 14 9.5 12 10"/><path d="M12 9c-1-2.5-3.5-4-6.5-3.5C6.5 8 9 9 12 9"/><path d="M12 9c1-2.5 3.5-4 6.5-3.5C17.5 8 15 9 12 9"/></svg>',
+  close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>',
+  gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="4"/><rect x="5" y="13" width="14" height="8"/><path d="M12 9v12"/><path d="M12 9c-1.2-3-3-4.5-4.5-4.5S5 5.7 5 7s2 2 3.5 2H12zM12 9c1.2-3 3-4.5 4.5-4.5S19 5.7 19 7s-2 2-3.5 2H12z"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+  medal1: '<svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.95"/><path d="M8.5 14.3L6 21l6-3 6 3-2.5-6.7" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linejoin="round"/><text x="12" y="11.8" text-anchor="middle" font-size="7" font-weight="800" fill="currentColor" font-family="Arial,sans-serif">1</text></svg>',
+  medal2: '<svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.95"/><path d="M8.5 14.3L6 21l6-3 6 3-2.5-6.7" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linejoin="round"/><text x="12" y="11.8" text-anchor="middle" font-size="7" font-weight="800" fill="currentColor" font-family="Arial,sans-serif">2</text></svg>',
+  coin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.7 9.3c0-1.3 1-2.3 2.3-2.3s2.3.9 2.3 2c0 2.8-4.6 1.8-4.6 4.6 0 1.1 1 2.3 2.3 2.3s2.3-1 2.3-2.3"/></svg>',
+  spider: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round"><circle cx="12" cy="12" r="2.5"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l4.2 4.2M14.8 14.8L19 19M19 5l-4.2 4.2M9.2 14.8L5 19"/></svg>',
+  axe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3l6 6-3 3-6-6z"/><path d="M13 9L4 18l2 2 9-9"/></svg>',
+  sword: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3l2 2-9.5 9.5-2-2z"/><path d="M9 13l-5 5 2 2 5-5"/><path d="M3 21l2.5-2.5"/></svg>',
+  car: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l1.5-5a2 2 0 0 1 1.9-1.4h9.2A2 2 0 0 1 18.5 11L20 16"/><rect x="2.5" y="16" width="19" height="4" rx="1.5"/><circle cx="7" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 1 0 10.5 10.5z"/></svg>',
+  helmet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15a8 8 0 0 1 16 0z"/><path d="M3 15h18v2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M12 7v2"/></svg>',
+  creditcard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 9.5h19"/><path d="M6 14.5h4"/></svg>',
+  calendar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 2.5 15.5 0 18M12 3c-2.5 2.5-2.5 15.5 0 18"/></svg>',
+  cloud: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18h10a4 4 0 0 0 .5-8 5.5 5.5 0 0 0-10.6-1.6A4.5 4.5 0 0 0 7 18z"/></svg>',
+  monitor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="13" rx="1.5"/><path d="M8 21h8M12 17.5V21"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 6.5l9 6.5 9-6.5"/></svg>',
+  camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="13" rx="2.5"/><circle cx="12" cy="13.5" r="3.6"/><path d="M8 7l1.3-2.2h5.4L16 7"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="8" r="0.9" fill="currentColor" stroke="none"/></svg>'
+};
+
+function renderIcons(root){
+  (root || document).querySelectorAll('[data-icon]').forEach(el => {
+    const key = el.getAttribute('data-icon');
+    if(ICONS[key]) el.innerHTML = ICONS[key];
+  });
+}
+document.addEventListener('DOMContentLoaded', () => renderIcons());
+renderIcons(); // in case DOM is already parsed (script at end of body)
+
+/* cursor removed for performance */
+
+/* ============================================
+   GALAXY BACKGROUND
+============================================ */
+(function(){
+  const canvas = document.getElementById('galaxy-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  const stars = [], nebulae = [], shootingStars = [];
+
+  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; initNebulae(); }
+
+  // Stars
+  function initStars(){
+    stars.length = 0;
+    const count = Math.floor(W * H / 1800);
+    for(let i=0; i<count; i++){
+      stars.push({
+        x: Math.random()*W, y: Math.random()*H,
+        r: Math.random()*1.4+.2,
+        a: Math.random()*.9+.1,
+        twinkle: Math.random()*Math.PI*2,
+        twinkleSpeed: .005+Math.random()*.02,
+        color: ['255,255,255','200,180,255','180,220,255','255,220,180'][Math.floor(Math.random()*4)]
+      });
+    }
+  }
+
+  // Nebula clouds
+  function initNebulae(){
+    nebulae.length = 0;
+    const nebs = [
+      { x:W*.15, y:H*.2,  r:280, c:'139,46,255',   a:.04 },
+      { x:W*.8,  y:H*.35, r:320, c:'0,229,255',     a:.03 },
+      { x:W*.5,  y:H*.7,  r:350, c:'176,107,255',   a:.035 },
+      { x:W*.9,  y:H*.75, r:240, c:'0,100,200',     a:.03 },
+      { x:W*.05, y:H*.65, r:260, c:'100,0,200',     a:.025 },
+      { x:W*.6,  y:H*.1,  r:200, c:'0,180,255',     a:.028 },
+    ];
+    nebulae.push(...nebs);
+  }
+
+  // Shooting stars
+  function spawnShooter(){
+    if(shootingStars.length < 3 && Math.random() < .008){
+      shootingStars.push({
+        x: Math.random()*W, y: Math.random()*H*.4,
+        vx: 4+Math.random()*6, vy: 2+Math.random()*4,
+        len: 80+Math.random()*120,
+        a: 1, life: 1
+      });
+    }
+  }
+
+  function drawNebula(n){
+    const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
+    grd.addColorStop(0,   `rgba(${n.c},${n.a})`);
+    grd.addColorStop(.5,  `rgba(${n.c},${n.a*.5})`);
+    grd.addColorStop(1,   `rgba(${n.c},0)`);
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fill();
+  }
+
+  function drawStar(s){
+    s.twinkle += s.twinkleSpeed;
+    const alpha = s.a * (.6 + .4*Math.sin(s.twinkle));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${s.color},${alpha})`;
+    ctx.fill();
+    // bigger stars get a glow
+    if(s.r > 1){
+      const g = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*4);
+      g.addColorStop(0, `rgba(${s.color},${alpha*.3})`);
+      g.addColorStop(1, `rgba(${s.color},0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r*4, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  function drawShooters(){
+    shootingStars.forEach((s,i) => {
+      s.x += s.vx; s.y += s.vy; s.life -= .025;
+      if(s.life <= 0){ shootingStars.splice(i,1); return; }
+      const tail = { x: s.x - s.vx*(s.len/s.vx), y: s.y - s.vy*(s.len/s.vx) };
+      const grd = ctx.createLinearGradient(tail.x, tail.y, s.x, s.y);
+      grd.addColorStop(0, 'rgba(255,255,255,0)');
+      grd.addColorStop(1, `rgba(255,255,255,${s.life*.9})`);
+      ctx.beginPath(); ctx.moveTo(tail.x, tail.y); ctx.lineTo(s.x, s.y);
+      ctx.strokeStyle = grd; ctx.lineWidth = 1.5; ctx.stroke();
+      // head glow
+      const hg = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,6);
+      hg.addColorStop(0, `rgba(255,255,255,${s.life})`);
+      hg.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(s.x,s.y,6,0,Math.PI*2); ctx.fill();
+    });
+  }
+
+  // Slowly rotating galaxy center
+  let angle = 0;
+  function drawGalaxyCore(){
+    angle += .0003;
+    const cx = W*.5, cy = H*.5;
+    for(let i=0; i<3; i++){
+      const r = 60+i*80, alpha = .015-i*.004;
+      const grd = ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+      grd.addColorStop(0, `rgba(139,46,255,${alpha*2})`);
+      grd.addColorStop(.4, `rgba(176,107,255,${alpha})`);
+      grd.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.save(); ctx.translate(cx,cy); ctx.rotate(angle*(i+1));
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.ellipse(0,0,r,r*.4,0,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  resize();
+  initStars();
+  window.addEventListener('resize', () => { resize(); initStars(); });
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Deep space gradient
+    const bg = ctx.createRadialGradient(W*.5,H*.3,0,W*.5,H*.5,Math.max(W,H)*.9);
+    bg.addColorStop(0,   'rgba(15,8,35,.95)');
+    bg.addColorStop(.4,  'rgba(8,4,20,.98)');
+    bg.addColorStop(1,   'rgba(3,1,10,1)');
+    ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+    // nebulae
+    nebulae.forEach(drawNebula);
+    // galaxy core
+    drawGalaxyCore();
+    // stars
+    stars.forEach(drawStar);
+    // shooting stars
+    spawnShooter(); drawShooters();
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ============================================
+   SCROLL REVEAL
+============================================ */
+const revealEls = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+revealEls.forEach(el => obs.observe(el));
+
+/* ============================================
+   PS PLUS MONTH SELECTOR
+============================================ */
+function setMonth(m) {
+  document.querySelectorAll('.mth-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.price-val').forEach(p => p.classList.remove('active'));
+  document.getElementById('price-'+m).classList.add('active');
+  const subs = { '3': '/3 meses', '12': '/12 meses' };
+  const notes = { '3': 'Pago único — sin renovación automática', '12': 'Pago único — mejor precio · ahorrás vs 4x3 meses' };
+  document.getElementById('price-sub').textContent = subs[m];
+  document.getElementById('price-note').textContent = notes[m];
+}
+
+/* ============================================
+   SHOPPING CART
+============================================ */
+let cart = [];
+
+function getSelectedPSPlusMonths(){
+  const active = document.querySelector('.mth-btn.active');
+  if(!active) return { months:'3', price:36000 };
+  const txt = active.textContent.trim();
+  return txt.includes('12') ? { months:'12', price:64000 } : { months:'3', price:36000 };
+}
+
+function addPSPlus(){
+  const sel = getSelectedPSPlusMonths();
+  addToCart('gamepad', `PS Plus Deluxe · ${sel.months} meses`, 'Cuenta compartida · beneficios en tu cuenta', sel.price);
+}
+
+function addToCart(iconKey, name, sub, price){
+  price = Number(price);
+  if(!iconKey || !name || !price) { console.error('addToCart: invalid args', iconKey, name, price); return; }
+  const existing = cart.find(i => i.name === name && i.sub === sub);
+  if(existing){ existing.qty++; }
+  else { cart.push({ icon: iconKey, name: name, sub: sub, price: price, qty: 1, id: String(Date.now()) }); }
+  updateCartUI();
+  showToast(name);
+  openCart();
+}
+
+function removeFromCart(id){
+  id = String(id);
+  cart = cart.filter(i => String(i.id) !== id);
+  updateCartUI();
+}
+
+function changeQty(id, delta){
+  id = String(id);
+  const item = cart.find(i => String(i.id) === id);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty <= 0) cart = cart.filter(i => String(i.id) !== id);
+  updateCartUI();
+}
+
+function clearCart(){
+  cart = [];
+  updateCartUI();
+}
+
+function updateCartUI(){
+  const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+  const count = cart.reduce((s,i) => s + i.qty, 0);
+
+  // Update badge
+  const badge = document.getElementById('cart-count');
+  badge.textContent = count;
+  badge.style.display = count > 0 ? 'flex' : 'none';
+
+  // Rebuild items area completely using a separate wrapper
+  const wrapper = document.getElementById('cart-items');
+  const footer = document.getElementById('cart-footer');
+
+  if(cart.length === 0){
+    wrapper.innerHTML = '<div class="cart-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:1rem;color:var(--muted);"><div class="icon" data-icon="cart" style="font-size:3rem;opacity:.4;"></div><div style="font-family:var(--font-d);font-size:.7rem;letter-spacing:.1em;text-align:center;">Tu carrito está vacío.<br>Agregá productos para continuar.</div></div>';
+    footer.style.display = 'none';
+    renderIcons(wrapper);
+    return;
+  }
+
+  footer.style.display = 'block';
+  let html = '';
+  cart.forEach(item => {
+    html += `
+    <div class="cart-item">
+      <div class="cart-item-icon"><span class="icon" data-icon="${item.icon}" style="font-size:1.5rem;color:var(--purple2);"></span></div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-sub">${item.sub}</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty('${item.id}',-1)">−</button>
+          <span class="qty-val">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button>
+        </div>
+      </div>
+      <div class="cart-item-price">$${(item.price*item.qty).toLocaleString('es-AR')}</div>
+      <button class="cart-item-remove" onclick="removeFromCart('${item.id}')"><span class="icon" data-icon="close"></span></button>
+    </div>`;
+  });
+  wrapper.innerHTML = html;
+  renderIcons(wrapper);
+  document.getElementById('cart-total').textContent = '$' + total.toLocaleString('es-AR');
+}
+
+function openCart(){ document.getElementById('cart-drawer').classList.add('open'); document.getElementById('cart-overlay').classList.add('open'); }
+function closeCart(){ document.getElementById('cart-drawer').classList.remove('open'); document.getElementById('cart-overlay').classList.remove('open'); }
+
+/* ============================================
+   MOBILE NAV
+============================================ */
+function toggleMobileNav(){
+  document.getElementById('nav-links').classList.toggle('open');
+  document.getElementById('nav-burger').classList.toggle('open');
+  document.getElementById('nav-mobile-overlay').classList.toggle('open');
+}
+function closeMobileNav(){
+  document.getElementById('nav-links').classList.remove('open');
+  document.getElementById('nav-burger').classList.remove('open');
+  document.getElementById('nav-mobile-overlay').classList.remove('open');
+}
+// Close mobile nav when a link is tapped
+document.querySelectorAll('#nav-links a').forEach(a => a.addEventListener('click', closeMobileNav));
+
+function showToast(name){
+  const t = document.getElementById('cart-toast');
+  t.innerHTML = '<span class="icon" data-icon="check" style="color:var(--green);margin-right:6px;"></span>' + name + ' agregado';
+  renderIcons(t);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function checkoutWA(){
+  if(cart.length === 0) return;
+  const total = cart.reduce((s,i) => s + i.price*i.qty, 0);
+  let msg = '¡Hola! Quiero realizar el siguiente pedido en Galaxy Games:\n\n';
+  cart.forEach(item => {
+    msg += `• *${item.name}* x${item.qty} — $${(item.price*item.qty).toLocaleString('es-AR')}\n`;
+  });
+  msg += `\nTotal: $${total.toLocaleString('es-AR')}\n\n¿Cómo procedo con el pago?`;
+  const url = 'https://wa.me/541123860254?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+}
+
+
+/* ============================================
+   GTA VI COUNTDOWN
+============================================ */
+(function(){
+  const target = new Date('2026-11-19T00:00:00-03:00').getTime();
+  const dEl = document.getElementById('cd-days');
+  const hEl = document.getElementById('cd-hours');
+  const mEl = document.getElementById('cd-mins');
+  const sEl = document.getElementById('cd-secs');
+  const teaserDaysEl = document.getElementById('teaser-days');
+  if(!dEl && !teaserDaysEl) return;
+  function tick(){
+    const now = Date.now();
+    let diff = target - now;
+    if(diff < 0) diff = 0;
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    if(dEl) dEl.textContent = days;
+    if(hEl) hEl.textContent = String(hours).padStart(2,'0');
+    if(mEl) mEl.textContent = String(mins).padStart(2,'0');
+    if(sEl) sEl.textContent = String(secs).padStart(2,'0');
+    if(teaserDaysEl) teaserDaysEl.textContent = days;
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* ============================================
+   GTA VI MODAL — open/close
+============================================ */
+function openGTAModal(){
+  document.getElementById('gta-modal').classList.add('open');
+  document.getElementById('gta-modal-overlay').classList.add('open');
+  document.body.classList.add('gta-modal-open');
+}
+function closeGTAModal(){
+  document.getElementById('gta-modal').classList.remove('open');
+  document.getElementById('gta-modal-overlay').classList.remove('open');
+  document.body.classList.remove('gta-modal-open');
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeGTAModal(); });
+
+/* ============================================
+   ML COUNTER
+============================================ */
+function animateCounter(el, target, duration, prefix){
+  let start = 0; const step = target/(duration/16);
+  const timer = setInterval(() => {
+    start += step;
+    if(start >= target){ start = target; clearInterval(timer); }
+    el.textContent = prefix + Math.floor(start).toLocaleString('es-AR');
+  }, 16);
+}
+const mlObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting && e.target.id === 'cnt-sales'){ animateCounter(e.target, 500, 1800, '+'); mlObserver.unobserve(e.target); }
+  });
+}, { threshold: 0.5 });
+const cntEl = document.getElementById('cnt-sales');
+if(cntEl) mlObserver.observe(cntEl);
+
+document.querySelector('.wa-float').addEventListener('mouseenter', function(){ this.style.transform='scale(1.12)'; });
+document.querySelector('.wa-float').addEventListener('mouseleave', function(){ this.style.transform='scale(1)'; });
+</script>
+</body>
+</html>
