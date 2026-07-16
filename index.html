@@ -1002,20 +1002,26 @@ textarea.field { resize: none; height: 110px; }
   height: 460px; border: 1px solid rgba(255,45,120,.2);
   background: linear-gradient(160deg, #1a0525 0%, #2a0a1a 50%, #0d1a2a 100%);
 }
+@media (min-width: 1440px) {
+  .gta-visual { height: 560px; }
+}
+@media (min-width: 1900px) {
+  .gta-visual { height: 640px; }
+}
 /* Looping trailer background */
 .gta-video-bg {
   position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none;
 }
 .gta-video-bg iframe {
   position: absolute; top: 50%; left: 50%;
-  width: 177.78%; height: 177.78%;
+  width: 215%; height: 215%;
   transform: translate(-50%, -50%);
   border: none;
 }
 .gta-video-overlay {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(20,4,26,.35) 0%, rgba(15,4,20,.25) 35%, rgba(8,3,13,.92) 100%),
+    linear-gradient(180deg, rgba(15,4,20,.5) 0%, rgba(15,4,20,.28) 30%, rgba(8,3,13,.92) 100%),
     linear-gradient(135deg, rgba(255,45,120,.2) 0%, rgba(0,229,255,.1) 100%);
 }
 .gta-visual-fallback { display: none; }
@@ -2432,10 +2438,19 @@ function checkoutWA(){
   function postCmd(func){
     iframe.contentWindow.postMessage(JSON.stringify({ event:'command', func:func, args:[] }), '*');
   }
+  let firstCallback = true;
   const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => postCmd(e.isIntersecting ? 'playVideo' : 'pauseVideo'));
+    entries.forEach(e => {
+      // Skip the very first callback if the video is already visible — it's already
+      // autoplaying at that point, so sending "playVideo" again just makes the
+      // YouTube player flash its center play/pause icon for no reason.
+      if(firstCallback && e.isIntersecting) return;
+      postCmd(e.isIntersecting ? 'playVideo' : 'pauseVideo');
+    });
+    firstCallback = false;
   }, { threshold: .15 });
-  iframe.addEventListener('load', () => obs.observe(iframe));
+  // Small delay before observing so the initial autoplay handshake settles first
+  iframe.addEventListener('load', () => setTimeout(() => obs.observe(iframe), 1200));
 })();
 
 /* ============================================
