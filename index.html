@@ -512,6 +512,7 @@ nav ul a:hover::after { transform: scaleX(1); }
    GAME CARDS
 ============================================ */
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 1.4rem; }
+.games-more-cta { text-align: center; margin-top: 2.5rem; }
 
 .game-card {
   background: var(--bg3); border: 1px solid var(--border);
@@ -1788,68 +1789,60 @@ nav ul .icon svg { width: 14px; height: 14px; }
 <!-- ===== JUEGOS AAA ===== -->
 <section class="section section-alt" id="juegos">
   <div class="sec-eyebrow reveal">Catálogo PlayStation</div>
-  <div class="sec-title reveal">Juegos más vendidos</div>
+  <div class="sec-title reveal">Juegos más pedidos</div>
   <p class="sec-sub reveal">Activación digital inmediata en tu cuenta PSN · PS4 y PS5</p>
 
   <div class="games-grid">
 
     <div class="game-card reveal">
       <div class="game-thumb">
-        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/1c7b75d8935a99f4e4fe0e4d3a893243adfe5baeacb34b8c.png"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Spider-Man 2">
-        <div class="fallback" style="display:none;background:linear-gradient(135deg,#1a003a,#3a0060);"><span class="icon" data-icon="spider" style="font-size:4rem"></span></div>
+        <div class="fallback" style="display:flex;background:linear-gradient(135deg,#1a003a,#3a0060);"><span class="icon" data-icon="spider" style="font-size:4rem"></span></div>
         <div class="g-badge b-top">Popular</div>
         <div class="g-platform">PS5</div>
         <div class="game-scan"></div>
       </div>
       <div class="game-body">
         <div class="game-genre">Acción · Mundo abierto</div>
-        <div class="game-title">Marvel's Spider-Man 2</div>
+        <div class="game-title">Spider-Man 2</div>
         <div class="game-desc">Peter Parker y Miles Morales en la aventura más épica de Nueva York.</div>
-        <div class="game-footer"><div class="game-price">$8.999</div><button class="btn-card" onclick="addToCart('spider','Spider-Man 2','PS5 · Digital',8999)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-footer"><div class="game-price">$50.900</div><button class="btn-card" onclick="addToCart('spider','Spider-Man 2','PS5 · Digital',50900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
     <div class="game-card reveal">
       <div class="game-thumb">
-        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202211/2222/l8QTN7ThQK3lRBHhB3nkISbU.png"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="God of War">
-        <div class="fallback" style="display:none;background:linear-gradient(135deg,#001a30,#002a50);"><span class="icon" data-icon="axe" style="font-size:4rem"></span></div>
+        <div class="fallback" style="display:flex;background:linear-gradient(135deg,#001a30,#002a50);"><span class="icon" data-icon="axe" style="font-size:4rem"></span></div>
         <div class="g-badge b-hot"><span class="icon" data-icon="flame"></span> Top</div>
         <div class="g-platform">PS5 / PS4</div>
         <div class="game-scan"></div>
       </div>
       <div class="game-body">
         <div class="game-genre">Aventura · Acción</div>
-        <div class="game-title">God of War Ragnarök</div>
+        <div class="game-title">God Of War Ragnarök</div>
         <div class="game-desc">Kratos y Atreus enfrentan el fin de los mundos en la secuela definitiva.</div>
-        <div class="game-footer"><div class="game-price">$9.499</div><button class="btn-card" onclick="addToCart('axe','God of War Ragnarök','PS5/PS4 · Digital',9499)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-footer"><div class="game-price">$41.900</div><button class="btn-card" onclick="addToCart('axe','God Of War Ragnarök','PS5/PS4 · Digital',41900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
     <div class="game-card reveal">
       <div class="game-thumb">
-        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202110/2000/phvVT0qZfcRms5qDAk0SI3CM.png"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Elden Ring">
-        <div class="fallback" style="display:none;background:linear-gradient(135deg,#1a1000,#3a2000);"><span class="icon" data-icon="sword" style="font-size:4rem"></span></div>
-        <div class="g-badge b-sale">Oferta</div>
+        <div class="fallback" style="display:flex;background:linear-gradient(135deg,#1a1000,#3a2000);"><span class="icon" data-icon="sword" style="font-size:4rem"></span></div>
+        <div class="g-badge b-new">Nuevo</div>
         <div class="g-platform">PS5 / PS4</div>
         <div class="game-scan"></div>
       </div>
       <div class="game-body">
         <div class="game-genre">RPG · Souls-like</div>
-        <div class="game-title">Elden Ring</div>
-        <div class="game-desc">El RPG de acción más premiado. Explorá The Lands Between.</div>
-        <div class="game-footer"><div class="game-price"><span class="old">$6.999</span>$5.499</div><button class="btn-card" onclick="addToCart('sword','Elden Ring','PS5/PS4 · Digital',5499)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-title">Elden Ring: Nightreign</div>
+        <div class="game-desc">La nueva expansión cooperativa en The Lands Between. Acción brutal sin pausa.</div>
+        <div class="game-footer"><div class="game-price">$41.900</div><button class="btn-card" onclick="addToCart('sword','Elden Ring: Nightreign','PS5/PS4 · Digital',41900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
     <div class="game-card reveal">
       <div class="game-thumb">
-        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202207/0722/Tnk6UF3KU2eTdPLBRTLCkR7r.png"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Gran Turismo 7">
-        <div class="fallback" style="display:none;background:linear-gradient(135deg,#001520,#002535);"><span class="icon" data-icon="car" style="font-size:4rem"></span></div>
-        <div class="g-badge b-sale">Oferta</div>
+        <div class="fallback" style="display:flex;background:linear-gradient(135deg,#001520,#002535);"><span class="icon" data-icon="car" style="font-size:4rem"></span></div>
+        <div class="g-badge b-top">Popular</div>
         <div class="g-platform">PS5 / PS4</div>
         <div class="game-scan"></div>
       </div>
@@ -1857,44 +1850,46 @@ nav ul .icon svg { width: 14px; height: 14px; }
         <div class="game-genre">Racing · Simulación</div>
         <div class="game-title">Gran Turismo 7</div>
         <div class="game-desc">+400 autos y 90 circuitos. La experiencia de conducción definitiva.</div>
-        <div class="game-footer"><div class="game-price"><span class="old">$8.499</span>$5.999</div><button class="btn-card" onclick="addToCart('car','Gran Turismo 7','PS5/PS4 · Digital',5999)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-footer"><div class="game-price">$41.900</div><button class="btn-card" onclick="addToCart('car','Gran Turismo 7','PS5/PS4 · Digital',41900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
     <div class="game-card reveal">
       <div class="game-thumb">
-        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202306/0322/7759a7a5d85ef7b6ab700b547e4e6a5ce2e3b5d8.png"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="FF XVI">
-        <div class="fallback" style="display:none;background:linear-gradient(135deg,#100020,#200040);"><span class="icon" data-icon="moon" style="font-size:4rem"></span></div>
-        <div class="g-badge b-new">Nuevo</div>
-        <div class="g-platform">PS5</div>
+        <div class="fallback" style="display:flex;background:linear-gradient(135deg,#1f1400,#3a2800);"><span class="icon" data-icon="compass" style="font-size:4rem"></span></div>
+        <div class="g-badge b-hot"><span class="icon" data-icon="flame"></span> Clásico</div>
+        <div class="g-platform">PS5 / PS4</div>
         <div class="game-scan"></div>
       </div>
       <div class="game-body">
-        <div class="game-genre">RPG · Acción</div>
-        <div class="game-title">Final Fantasy XVI</div>
-        <div class="game-desc">Un mundo en guerra por los cristales del éter. Pura magia en PS5.</div>
-        <div class="game-footer"><div class="game-price">$8.199</div><button class="btn-card" onclick="addToCart('moon','Final Fantasy XVI','PS5 · Digital',8199)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-genre">Acción · Mundo abierto</div>
+        <div class="game-title">Red Dead Redemption II</div>
+        <div class="game-desc">La epopeya del viejo oeste de Rockstar. Una de las mejores historias jamás contadas.</div>
+        <div class="game-footer"><div class="game-price">$28.900</div><button class="btn-card" onclick="addToCart('compass','Red Dead Redemption II','PS5/PS4 · Digital',28900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
     <div class="game-card reveal">
       <div class="game-thumb">
-        <img src="https://image.api.playstation.com/vulcan/ap/rnd/202406/1015/ae9f8b6f2c5d3a7e1b0c4f8d2e6a9b3c.png"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="Helldivers 2">
-        <div class="fallback" style="display:none;background:linear-gradient(135deg,#0a0f00,#1a2000);"><span class="icon" data-icon="helmet" style="font-size:4rem"></span></div>
-        <div class="g-badge b-hot"><span class="icon" data-icon="flame"></span> Viral</div>
+        <div class="fallback" style="display:flex;background:linear-gradient(135deg,#0a0f14,#152530);"><span class="icon" data-icon="shield" style="font-size:4rem"></span></div>
+        <div class="g-badge b-top">Exclusivo</div>
         <div class="g-platform">PS5</div>
         <div class="game-scan"></div>
       </div>
       <div class="game-body">
-        <div class="game-genre">Acción · Co-op</div>
-        <div class="game-title">Helldivers 2</div>
-        <div class="game-desc">El juego cooperativo más explosivo del año. Defendé la democracia.</div>
-        <div class="game-footer"><div class="game-price">$6.999</div><button class="btn-card" onclick="addToCart('helmet','Helldivers 2','PS5 · Digital',6999)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-genre">Aventura · Survival</div>
+        <div class="game-title">The Last Of Us Part I</div>
+        <div class="game-desc">Joel y Ellie en el remake definitivo. Una de las historias más aclamadas en PS5.</div>
+        <div class="game-footer"><div class="game-price">$50.900</div><button class="btn-card" onclick="addToCart('shield','The Last Of Us Part I','PS5 · Digital',50900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
+  </div>
+
+  <div class="games-more-cta reveal">
+    <a href="catalogo.html" class="btn-outline">
+      <span class="icon" data-icon="gamepad"></span> Ver catálogo completo (+116 juegos) →
+    </a>
   </div>
 </section>
 
@@ -2236,7 +2231,8 @@ const ICONS = {
   mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 6.5l9 6.5 9-6.5"/></svg>',
   camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="13" rx="2.5"/><circle cx="12" cy="13.5" r="3.6"/><path d="M8 7l1.3-2.2h5.4L16 7"/></svg>',
   pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>',
-  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="8" r="0.9" fill="currentColor" stroke="none"/></svg>'
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="8" r="0.9" fill="currentColor" stroke="none"/></svg>',
+  compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5l-2 5-3 1.5 2-5z"/></svg>'
 };
 
 function renderIcons(root){
