@@ -1280,22 +1280,23 @@ footer p { font-size: .72rem; color: var(--muted); }
   .nav-burger { display: flex; }
 
   #nav-links {
-    position: fixed; top: 60px; right: 0; bottom: 0; width: 78vw; max-width: 320px;
+    position: fixed; top: 60px; right: 0; width: 78vw; max-width: 320px;
+    height: calc(100vh - 60px); height: calc(100dvh - 60px);
     background: var(--bg2); border-left: 1px solid var(--border);
-    flex-direction: column; align-items: stretch; gap: 0;
-    padding: 1.5rem 1.5rem 2rem;
+    display: flex; flex-direction: column; align-items: stretch; gap: 0;
+    padding: 1rem 1.5rem 1.5rem;
     transform: translateX(100%); transition: transform .3s cubic-bezier(.4,0,.2,1);
-    z-index: 160; overflow-y: auto;
+    z-index: 160; overflow-y: auto; -webkit-overflow-scrolling: touch;
   }
   #nav-links.open { transform: translateX(0); }
   #nav-links li { width: 100%; }
   #nav-links li a {
-    display: block; padding: .9rem 0; font-size: .78rem;
+    display: block; padding: .68rem 0; font-size: .76rem;
     border-bottom: 1px solid rgba(255,255,255,.06);
   }
   #nav-links li a.nav-cta {
-    margin-top: 1rem; text-align: center; border-bottom: none; border-radius: 6px;
-    padding: .8rem 0;
+    margin-top: .85rem; text-align: center; border-bottom: none; border-radius: 6px;
+    padding: .75rem 0;
   }
   .nav-mobile-overlay { display: block; }
 
@@ -2180,7 +2181,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
 <!-- ===== FOOTER ===== -->
 <footer>
   <div class="footer-brand">
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6AQUDiYk..." alt="" style="height:24px;opacity:.8;">
+    <img src="data:image/png;base64,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" alt="" style="height:24px;opacity:.8;">
     Galaxy<span>Games</span>
   </div>
   <p>© 2025 Galaxy Games · Argentina · Todos los derechos reservados</p>
