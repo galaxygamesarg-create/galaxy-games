@@ -498,22 +498,13 @@ nav ul a:hover::after { transform: scaleX(1); }
 /* Looping trailer background — same robust pattern as GTA VI: true 16:9, no crop/zoom */
 .fc-video-bg { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
 .fc-video-bg iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; pointer-events: none; }
-/* Splash cover — hides YouTube's title/channel card for the first few seconds, then fades away */
-.fc-video-splash {
-  position: absolute; inset: 0; z-index: 2;
-  background: linear-gradient(135deg, #050d20 0%, #030d08 100%);
-  display: flex; align-items: center; justify-content: center;
-  opacity: 1; transition: opacity 1s ease; pointer-events: none;
-}
-.fc-video-splash.hide { opacity: 0; }
-.fc-video-splash .icon { font-size: 3.5rem; color: rgba(0,229,255,.5); }
 .fc-video-label {
   position: absolute; bottom: 14px; left: 16px; z-index: 3;
   font-family: var(--font-d); font-size: .58rem; letter-spacing: .14em; text-transform: uppercase;
   color: rgba(255,255,255,.6); background: rgba(0,0,0,.4); padding: 4px 10px; border-radius: 4px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .fc-video-bg, .fc-video-splash { display: none; }
+  .fc-video-bg { display: none; }
 }
 
 /* ============================================
@@ -1040,18 +1031,9 @@ textarea.field { resize: none; height: 110px; }
     linear-gradient(135deg, rgba(255,45,120,.2) 0%, rgba(0,229,255,.1) 100%);
 }
 .gta-visual-fallback { display: none; }
-/* Splash cover — hides YouTube's title/channel card + content-rating notice for the
-   first few seconds, then fades away to reveal the already-playing video underneath */
-.gta-video-splash {
-  position: absolute; inset: 0; z-index: 2;
-  background: linear-gradient(160deg, #1a0525 0%, #2a0a1a 50%, #0d1a2a 100%);
-  opacity: 1; transition: opacity 1s ease; pointer-events: none;
-}
-.gta-video-splash.hide { opacity: 0; }
 @media (prefers-reduced-motion: reduce) {
   .gta-video-bg { display: none; }
   .gta-visual-fallback { display: block; }
-  .gta-video-splash { display: none; }
 }
 .gta-visual::before {
   content: ''; position: absolute; inset: 0;
@@ -1532,15 +1514,12 @@ nav ul .icon svg { width: 14px; height: 14px; }
       <div class="gta-video-bg">
         <iframe id="gta-trailer-iframe" src="https://www.youtube.com/embed/VQRLujxTm3c?autoplay=1&mute=1&loop=1&playlist=VQRLujxTm3c&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&fs=0"
           title="GTA VI — Trailer 2 oficial Rockstar Games" frameborder="0"
-          allow="autoplay; encrypted-media" loading="lazy"></iframe>
+          allow="autoplay; encrypted-media"></iframe>
       </div>
       <div class="gta-visual-fallback">
         <div class="gta-sun"></div>
       </div>
       <div class="gta-video-overlay"></div>
-      <div class="gta-video-splash" id="gta-video-splash">
-        <div class="gta-sun"></div>
-      </div>
       <div class="gta-logo-text">GTA<span>VI</span></div>
       <div class="gta-tagline">Vice City · Leonida</div>
     </div>
@@ -1774,10 +1753,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
       <div class="fc-video-bg">
         <iframe id="fc-trailer-iframe" src="https://www.youtube.com/embed/_W-989-_wzI?autoplay=1&mute=1&loop=1&playlist=_W-989-_wzI&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&fs=0"
           title="EA SPORTS FC 26 — The World's Game Trailer" frameborder="0"
-          allow="autoplay; encrypted-media" loading="lazy"></iframe>
-      </div>
-      <div class="fc-video-splash" id="fc-video-splash">
-        <span class="icon" data-icon="soccer"></span>
+          allow="autoplay; encrypted-media"></iframe>
       </div>
       <div class="fc-video-label">The World's Game Update</div>
     </div>
@@ -2464,20 +2440,6 @@ function checkoutWA(){
 /* GTA trailer: no scroll-based pause/resume — sending API commands via postMessage
    was causing the YouTube player to flash its control overlay (rewind/pause/forward).
    The video just autoplays once and loops continuously; simpler and glitch-free. */
-
-/* ============================================
-   TRAILER SPLASH COVERS
-   Hides YouTube's title/channel card (and, for GTA, its content-rating
-   notice) that appears for the first few seconds of an embed — the video
-   is already playing silently behind the splash the whole time, so once
-   it fades out the footage is already past that intro chrome.
-============================================ */
-(function(){
-  const gtaSplash = document.getElementById('gta-video-splash');
-  const fcSplash = document.getElementById('fc-video-splash');
-  if(gtaSplash) setTimeout(() => gtaSplash.classList.add('hide'), 7000);
-  if(fcSplash) setTimeout(() => fcSplash.classList.add('hide'), 5000);
-})();
 
 /* ============================================
    GTA VI COUNTDOWN
