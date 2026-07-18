@@ -512,6 +512,7 @@ nav ul a:hover::after { transform: scaleX(1); }
    GAME CARDS
 ============================================ */
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 1.4rem; }
+
 .game-card {
   background: var(--bg3); border: 1px solid var(--border);
   border-radius: 10px; overflow: hidden;
@@ -1465,6 +1466,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
     <li><a href="#psplus">PS Plus</a></li>
     <li><a href="#fc26">FC 26</a></li>
     <li><a href="#juegos">Juegos AAA</a></li>
+    <li><a href="catalogo.html">Catálogo</a></li>
     <li><a href="#mercadolibre">MercadoLibre</a></li>
     <li><a href="#opiniones">Opiniones</a></li>
     <li><a href="#contacto">Contacto</a></li>
@@ -2190,6 +2192,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
     <a href="#psplus">PS Plus</a>
     <a href="#fc26">FC 26</a>
     <a href="#juegos">Juegos</a>
+    <a href="catalogo.html">Catálogo</a>
     <a href="#mercadolibre">MercadoLibre</a>
     <a href="#opiniones">Opiniones</a>
     <a href="#contacto">Contacto</a>
@@ -2668,8 +2671,11 @@ const mlObserver = new IntersectionObserver(entries => {
 const cntEl = document.getElementById('cnt-sales');
 if(cntEl) mlObserver.observe(cntEl);
 
-document.querySelector('.wa-float').addEventListener('mouseenter', function(){ this.style.transform='scale(1.12)'; });
-document.querySelector('.wa-float').addEventListener('mouseleave', function(){ this.style.transform='scale(1)'; });
+const waFloatEl = document.querySelector('.wa-float');
+if(waFloatEl){
+  waFloatEl.addEventListener('mouseenter', function(){ this.style.transform='scale(1.12)'; });
+  waFloatEl.addEventListener('mouseleave', function(){ this.style.transform='scale(1)'; });
+}
 </script>
 </body>
 </html>
