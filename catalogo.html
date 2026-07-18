@@ -1473,7 +1473,20 @@ nav ul .icon svg { width: 14px; height: 14px; }
 .catalog-item-btn:hover { background: var(--purple); color: #fff; }
 .catalog-item-btn .icon svg { width: 15px; height: 15px; }
 .catalog-item.hidden-by-search { display: none; }
-.catalog-empty { text-align: center; color: var(--muted); font-size: .88rem; padding: 3rem 0; }
+.catalog-empty {
+  text-align: center; padding: 3rem 1.5rem; max-width: 480px; margin: 0 auto;
+  background: var(--bg3); border: 1px solid var(--purple-border); border-radius: 10px;
+}
+.catalog-empty p { color: var(--muted2); font-size: .9rem; margin-bottom: .4rem; }
+.catalog-empty-sub { color: var(--muted) !important; font-size: .82rem !important; margin-bottom: 1.4rem !important; }
+.catalog-empty-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #25d366; color: #fff; padding: .75rem 1.5rem; border-radius: 8px;
+  font-family: var(--font-d); font-size: .78rem; font-weight: 700; letter-spacing: .04em;
+  transition: all .2s; box-shadow: 0 0 20px rgba(37,211,102,.25);
+}
+.catalog-empty-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(37,211,102,.4); }
+.catalog-empty-btn .icon svg { width: 16px; height: 16px; }
 
 .cat-nav-simple { display: flex; align-items: center; gap: .8rem; }
 .cat-nav-back {
@@ -2155,7 +2168,13 @@ nav ul .icon svg { width: 14px; height: 14px; }
         <button class="catalog-item-btn" onclick="addToCart('gamepad','WRC Generations','PS4/PS5 · Digital',31900)"><span class="icon" data-icon="cart"></span></button>
       </div>
   </div>
-  <p class="catalog-empty" id="catalog-empty" style="display:none;">No encontramos ningún juego con ese nombre.</p>
+  <div class="catalog-empty" id="catalog-empty" style="display:none;">
+    <p>No encontramos ningún juego con ese nombre en el catálogo.</p>
+    <p class="catalog-empty-sub">Puede que lo tengamos igual — escribinos y te pasamos el precio.</p>
+    <a href="#" id="catalog-empty-wa" target="_blank" class="catalog-empty-btn">
+      <span class="icon" data-icon="chat"></span> Preguntar por WhatsApp
+    </a>
+  </div>
 </div>
 
 <footer>
@@ -2649,7 +2668,8 @@ if(waFloatEl){
    CATÁLOGO SEARCH FILTER
 ============================================ */
 function filterCatalog(query){
-  query = query.trim().toLowerCase();
+  const rawQuery = query.trim();
+  query = rawQuery.toLowerCase();
   const items = document.querySelectorAll('#catalog-grid .catalog-item');
   let visibleCount = 0;
   items.forEach(item => {
@@ -2657,8 +2677,17 @@ function filterCatalog(query){
     item.classList.toggle('hidden-by-search', !match);
     if(match) visibleCount++;
   });
-  document.getElementById('catalog-empty').style.display = visibleCount === 0 ? 'block' : 'none';
+  const emptyEl = document.getElementById('catalog-empty');
+  emptyEl.style.display = visibleCount === 0 ? 'block' : 'none';
   document.getElementById('catalog-count').textContent = visibleCount;
+
+  if(visibleCount === 0){
+    const waLink = document.getElementById('catalog-empty-wa');
+    const msg = rawQuery
+      ? `¡Hola! Buscaba "${rawQuery}" en el catálogo y no lo encontré. ¿Lo tienen disponible? ¿Qué precio tiene?`
+      : '¡Hola! Estoy buscando un juego que no encontré en el catálogo. ¿Me pasás precio?';
+    waLink.href = 'https://wa.me/541123860254?text=' + encodeURIComponent(msg);
+  }
 }
 
 </script>
