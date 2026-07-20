@@ -772,6 +772,21 @@ nav ul a:hover::after { transform: scaleX(1); }
 }
 .ps-heading { font-family: var(--font-d); font-size: 1.5rem; font-weight: 900; }
 .ps-heading-sub { font-size: .82rem; color: var(--muted2); font-weight: 300; }
+
+.psplus-teaser-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(139,46,255,.06), rgba(0,112,209,.05));
+  border: 1px solid var(--purple-border); border-radius: 14px; padding: 2.2rem 2.5rem;
+}
+.psplus-teaser-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(139,46,255,.12); border: 1px solid rgba(139,46,255,.3);
+  color: var(--purple2); font-family: var(--font-d); font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 20px; margin-bottom: .9rem;
+}
+.psplus-teaser-desc { font-size: .88rem; color: var(--muted2); font-weight: 300; max-width: 480px; line-height: 1.6; margin-bottom: 1rem; }
+.psplus-teaser-price { font-family: var(--font-d); font-size: 1rem; color: var(--muted2); }
+.psplus-teaser-price strong { font-size: 1.5rem; color: var(--white); }
 .ps-alert {
   background: rgba(0,112,209,.07); border: 1px solid rgba(0,112,209,.22);
   border-radius: 8px; padding: 1.1rem 1.5rem; margin-bottom: 2.5rem;
@@ -2023,7 +2038,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
   </div>
 </section>
 
-<!-- ===== PS PLUS DELUXE ===== -->
+<!-- ===== PS PLUS DELUXE (teaser) ===== -->
 <section class="section" id="psplus">
   <div class="ps-top reveal">
     <div class="ps-icon">PS+</div>
@@ -2033,60 +2048,13 @@ nav ul .icon svg { width: 14px; height: 14px; }
     </div>
   </div>
 
-  <div class="ps-alert reveal">
-    <span class="icon" data-icon="info"></span>
-    <p>Vendemos <span>PS Plus Deluxe</span> mediante <span>cuenta compartida</span>. Todos los beneficios (catálogo de +700 juegos, multijugador, descuentos, clásicos) se reflejan en tu <span>cuenta personal</span>. <span>Garantía total</span> por los meses contratados, contenido 100% original de la web oficial de PlayStation.</p>
-  </div>
-
-  <div class="psplus-card reveal">
-    <div class="psplus-badge-top"><span class="icon" data-icon="star"></span> Plan incluido</div>
-    <div class="psplus-inner">
-      <div class="psplus-left">
-        <div class="psplus-icon">PS+</div>
-        <div class="psplus-tier">Plan</div>
-        <div class="psplus-name">PS Plus Deluxe</div>
-
-        <div class="month-selector">
-          <div class="month-label">Elegí tu período</div>
-          <div class="month-btns">
-            <button class="mth-btn active" onclick="setMonth('3')">
-              <span>3 meses<span class="sub-text">$36.000</span></span>
-            </button>
-            <button class="mth-btn" onclick="setMonth('12')">
-              <span>12 meses<span class="sub-text">$64.000 · Mejor precio</span></span>
-            </button>
-          </div>
-        </div>
-
-        <div class="price-display">
-          <div class="price-val active" id="price-3">$36.000</div>
-          <div class="price-val" id="price-12">$64.000</div>
-          <div class="price-sub" id="price-sub">/3 meses</div>
-        </div>
-        <div class="price-note" id="price-note">Pago único — sin renovación automática</div>
-
-        <button class="plan-cta" id="psplus-cta-btn" onclick="addPSPlus()">Suscribirme — Agregar <span class="icon" data-icon="cart"></span></button>
-      </div>
-
-      <div>
-        <ul class="psplus-features">
-          <li class="hi"><span class="feat-icon icon" data-icon="gamepad"></span>+700 juegos en catálogo total</li>
-          <li class="hi"><span class="feat-icon icon" data-icon="gamepad"></span>Juegos PS4, PS5, PS1, PS2, PS3, PSP</li>
-          <li class="hi"><span class="feat-icon icon" data-icon="globe"></span>Multijugador online</li>
-          <li class="hi"><span class="feat-icon icon" data-icon="gift"></span>Juegos gratis nuevos cada mes</li>
-          <li><span class="feat-icon icon" data-icon="coin"></span>Descuentos exclusivos en PS Store</li>
-          <li><span class="feat-icon icon" data-icon="clock"></span>Pruebas de tiempo limitado</li>
-          <li><span class="feat-icon icon" data-icon="cloud"></span>100 GB almacenamiento en nube</li>
-          <li><span class="feat-icon icon" data-icon="monitor"></span>PlayStation Now streaming</li>
-          <li><span class="feat-icon icon" data-icon="trophy"></span>Juegos clásicos remasterizados</li>
-          <li><span class="feat-icon icon" data-icon="shield"></span>Garantía por los meses contratados</li>
-        </ul>
-      </div>
+  <div class="psplus-teaser-card reveal">
+    <div class="psplus-teaser-left">
+      <div class="psplus-teaser-badge"><span class="icon" data-icon="star"></span> +700 juegos incluidos</div>
+      <p class="psplus-teaser-desc">Multijugador online, catálogo PS4/PS5/PS1/PS2/PS3/PSP, descuentos exclusivos y garantía total. Disponible en 3 y 12 meses.</p>
+      <div class="psplus-teaser-price">Desde <strong>$36.000</strong></div>
     </div>
-
-    <div class="psplus-guarantee">
-      <span class="icon" data-icon="shield"></span> <strong>Garantía Galaxy Games</strong> — La suscripción se realiza mediante cuenta compartida (sistema oficial de PlayStation). Los beneficios como el catálogo, multijugador y descuentos se comparten a tu cuenta personal. Si surgiera cualquier inconveniente durante el período contratado, lo solucionamos o te devolvemos el dinero. <strong>100% original de la web de PlayStation.</strong>
-    </div>
+    <a href="psplus.html" class="btn-primary">Ver planes y precios →</a>
   </div>
 </section>
 
@@ -2243,6 +2211,18 @@ nav ul .icon svg { width: 14px; height: 14px; }
     <a href="catalogo.html" class="btn-outline">
       <span class="icon" data-icon="gamepad"></span> Ver catálogo completo (+116 juegos) →
     </a>
+  </div>
+</section>
+
+<!-- ===== CONSOLAS Y ACCESORIOS (teaser) ===== -->
+<section class="section section-alt" id="consolas">
+  <div class="psplus-teaser-card reveal">
+    <div class="psplus-teaser-left">
+      <div class="psplus-teaser-badge"><span class="icon" data-icon="gamepad"></span> Nueva categoría</div>
+      <div class="sec-title" style="margin-bottom:.5rem;">Consolas y Accesorios</div>
+      <p class="psplus-teaser-desc">PS5, joysticks, auriculares y más — próximamente disponible.</p>
+    </div>
+    <a href="consolas.html" class="btn-primary">Ver consolas y accesorios →</a>
   </div>
 </section>
 
@@ -2603,6 +2583,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
     <a href="#fc26">FC 26</a>
     <a href="#juegos">Juegos</a>
     <a href="catalogo.html">Catálogo</a>
+    <a href="consolas.html">Consolas</a>
     <a href="#mercadolibre">MercadoLibre</a>
     <a href="#opiniones">Opiniones</a>
     <a href="#instagram">Instagram</a>
