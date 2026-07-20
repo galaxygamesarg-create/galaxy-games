@@ -217,13 +217,14 @@ nav {
 }
 nav::after {
   content: '';
-  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--purple), var(--cyan), transparent);
-  animation: nav-line 4s linear infinite;
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--purple), var(--cyan), var(--purple), transparent);
+  background-size: 200% 100%;
+  animation: nav-line 2.5s linear infinite;
 }
 @keyframes nav-line {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
 }
 .nav-logo { display: flex; align-items: center; gap: 12px; }
 .nav-logo img { height: 40px; width: 40px; object-fit: contain; filter: drop-shadow(0 0 12px var(--purple)); }
@@ -513,6 +514,177 @@ nav ul a:hover::after { transform: scaleX(1); }
 ============================================ */
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 1.4rem; }
 .games-more-cta { text-align: center; margin-top: 2.5rem; }
+
+/* ============================================
+   PREVENTAS — scalable list of upcoming titles
+============================================ */
+.preventas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.4rem; }
+.preventa-card {
+  background: var(--bg3); border: 1px solid var(--purple-border);
+  border-radius: 12px; overflow: hidden; transition: all .25s;
+}
+.preventa-card:hover { border-color: rgba(139,46,255,.45); transform: translateY(-4px); }
+.preventa-thumb { height: 170px; position: relative; overflow: hidden; background: var(--bg2); }
+.preventa-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.preventa-thumb .fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.preventa-badge {
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  display: flex; align-items: center; gap: 5px;
+  background: linear-gradient(135deg, #ff2d78, #ff8c00); color: #fff;
+  font-family: var(--font-d); font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 4px;
+}
+.preventa-badge .icon svg { width: 11px; height: 11px; }
+.preventa-date {
+  position: absolute; bottom: 10px; left: 10px; z-index: 2;
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(0,0,0,.6); backdrop-filter: blur(3px); color: #fff;
+  font-family: var(--font-d); font-size: .58rem; font-weight: 600; letter-spacing: .05em;
+  padding: 4px 9px; border-radius: 4px;
+}
+.preventa-date .icon svg { width: 11px; height: 11px; }
+.preventa-body { padding: 1.1rem 1.2rem 1.3rem; }
+.preventa-genre { font-size: .64rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: .3rem; }
+.preventa-title { font-family: var(--font-d); font-size: 1.05rem; font-weight: 700; margin-bottom: .4rem; }
+.preventa-desc { font-size: .78rem; color: var(--muted2); font-weight: 300; line-height: 1.5; margin-bottom: 1rem; }
+.preventa-editions { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.preventa-ed {
+  background: rgba(255,255,255,.03); border: 1px solid var(--border);
+  border-radius: 8px; padding: .7rem .8rem; text-align: center; cursor: pointer; transition: all .2s;
+}
+.preventa-ed:hover { border-color: var(--purple2); background: rgba(139,46,255,.08); }
+.preventa-ed-label { display: flex; align-items: center; justify-content: center; gap: 4px; font-size: .6rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted2); margin-bottom: .3rem; }
+.preventa-ed-label .icon svg { width: 11px; height: 11px; }
+.preventa-ed-price { font-family: var(--font-d); font-size: 1.05rem; font-weight: 800; color: var(--purple2); margin-bottom: .4rem; }
+.preventa-ed-btn {
+  width: 100%; padding: .4rem; border-radius: 5px; border: none;
+  background: var(--purple-glow, rgba(139,46,255,.15)); color: var(--purple2);
+  font-family: var(--font-d); font-size: .58rem; font-weight: 700; letter-spacing: .05em;
+  cursor: pointer; transition: all .2s;
+}
+.preventa-ed-btn:hover { background: var(--purple); color: #fff; }
+.preventas-note {
+  display: flex; gap: 10px; align-items: flex-start; margin-top: 1.6rem;
+  background: rgba(139,46,255,.05); border: 1px solid var(--purple-border);
+  border-radius: 8px; padding: .9rem 1.2rem; max-width: 700px;
+}
+.preventas-note .icon { color: var(--purple2); flex-shrink: 0; margin-top: 2px; }
+.preventas-note .icon svg { width: 16px; height: 16px; }
+.preventas-note p { font-size: .8rem; color: var(--muted2); line-height: 1.6; }
+
+/* ============================================
+   PREVENTAS CAROUSEL
+============================================ */
+.pcar-wrap { position: relative; overflow: hidden; border-radius: 16px; }
+.preventa-carousel {
+  display: flex; width: 200%; transition: transform .5s cubic-bezier(.4,0,.2,1);
+}
+.pcar-slide { width: 50%; flex-shrink: 0; box-sizing: border-box; padding: 0 2px; }
+
+/* Wolverine slide */
+.pw-slide {
+  background: linear-gradient(160deg, #1a0505 0%, #260808 50%, #0d1a1a 100%);
+  border: 1px solid rgba(255,80,40,.2); border-radius: 16px;
+  padding: 2.5rem; position: relative; overflow: hidden;
+}
+.pw-slide::before {
+  content: ''; position: absolute; top: -20%; right: -10%; width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(255,80,40,.1) 0%, transparent 60%); pointer-events: none;
+}
+.pw-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3rem; align-items: center; position: relative; z-index: 2; }
+.pw-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,80,40,.12); border: 1px solid rgba(255,80,40,.35);
+  color: #ff8a5c; font-family: var(--font-d); font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 1.1rem;
+}
+.pw-title { font-family: var(--font-d); font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 900; letter-spacing: -.01em; line-height: 1; margin-bottom: 1rem; }
+.pw-title span { color: #ff8a5c; text-shadow: 0 0 25px rgba(255,80,40,.4); }
+.pw-desc { font-size: .87rem; color: var(--muted2); font-weight: 300; line-height: 1.75; max-width: 460px; margin-bottom: 1.5rem; }
+.pw-facts { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1.8rem; }
+.pw-fact {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 7px; padding: .45rem .85rem; font-size: .74rem; color: var(--muted2);
+}
+.pw-fact .icon svg { width: 13px; height: 13px; color: #ff8a5c; }
+.pw-fact strong { color: var(--white); }
+.pw-editions { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+.pw-ed {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px; padding: 1rem 1.1rem; transition: all .2s;
+}
+.pw-ed:hover { border-color: rgba(255,80,40,.4); }
+.pw-ed-label { display: flex; align-items: center; gap: 5px; font-size: .62rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted2); margin-bottom: .4rem; }
+.pw-ed-label .icon svg { width: 12px; height: 12px; }
+.pw-ed-price { font-family: var(--font-d); font-size: 1.35rem; font-weight: 800; color: #fff; margin-bottom: .6rem; }
+.pw-ed-btn {
+  width: 100%; padding: .55rem; border-radius: 6px; border: none;
+  background: linear-gradient(135deg, #ff5028, #ff8c00); color: #fff;
+  font-family: var(--font-d); font-size: .64rem; font-weight: 700; letter-spacing: .05em;
+  cursor: pointer; transition: all .2s;
+}
+.pw-ed-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(255,80,40,.35); }
+.pw-video-panel { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 16/9; width: 100%; border: 1px solid rgba(255,80,40,.25); background: #0a0505; }
+.pw-video-panel iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; pointer-events: none; }
+.pw-video-tag {
+  position: absolute; bottom: 10px; left: 10px; z-index: 2;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(3px); color: #fff;
+  font-family: var(--font-d); font-size: .56rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 4px;
+}
+
+/* FC27 teaser slide */
+.pf-slide {
+  background: linear-gradient(160deg, #061a10 0%, #0a2515 50%, #0d1a1a 100%);
+  border: 1px solid rgba(0,214,143,.2); border-radius: 16px;
+  padding: 3rem 2.5rem; position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  min-height: 420px; justify-content: center;
+}
+.pf-slide::before {
+  content: '⚽'; position: absolute; font-size: 22rem; opacity: .03; right: -3rem; bottom: -5rem;
+  pointer-events: none; line-height: 1;
+}
+.pf-ribbon {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(0,214,143,.12); border: 1px solid rgba(0,214,143,.35);
+  color: var(--green); font-family: var(--font-d); font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  padding: 6px 16px; border-radius: 20px; margin-bottom: 1.3rem; position: relative; z-index: 2;
+}
+.pf-title { font-family: var(--font-d); font-size: clamp(2rem, 4.5vw, 3.2rem); font-weight: 900; margin-bottom: .7rem; position: relative; z-index: 2; }
+.pf-title span { color: var(--green); }
+.pf-sub { font-size: .88rem; color: var(--muted2); font-weight: 300; max-width: 520px; margin-bottom: 1.8rem; position: relative; z-index: 2; }
+.pf-rumors { display: flex; flex-direction: column; gap: .55rem; max-width: 480px; margin-bottom: 1.8rem; position: relative; z-index: 2; text-align: left; }
+.pf-rumor { display: flex; align-items: flex-start; gap: 10px; font-size: .8rem; color: var(--muted2); line-height: 1.5; }
+.pf-rumor .icon { color: var(--green); flex-shrink: 0; margin-top: 2px; }
+.pf-rumor .icon svg { width: 14px; height: 14px; }
+.pf-disclaimer { font-size: .7rem; color: var(--muted); font-style: italic; margin-bottom: 1.6rem; position: relative; z-index: 2; }
+.pf-notify-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(0,214,143,.1); border: 1px solid rgba(0,214,143,.35); color: var(--green);
+  padding: .8rem 1.8rem; border-radius: 8px; font-family: var(--font-d); font-size: .68rem; font-weight: 700; letter-spacing: .06em;
+  transition: all .2s; position: relative; z-index: 2;
+}
+.pf-notify-btn:hover { background: rgba(0,214,143,.2); transform: translateY(-1px); }
+
+/* Carousel controls */
+.pcar-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(15,10,20,.85); border: 1px solid var(--purple-border); color: #fff;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: all .2s; backdrop-filter: blur(4px);
+}
+.pcar-arrow:hover { background: var(--purple); border-color: var(--purple); }
+.pcar-arrow svg { width: 18px; height: 18px; }
+.pcar-prev { left: 14px; }
+.pcar-next { right: 14px; }
+.pcar-dots { display: flex; justify-content: center; gap: 8px; margin-top: 1.5rem; }
+.pcar-dot { width: 9px; height: 9px; border-radius: 50%; border: none; background: rgba(255,255,255,.15); cursor: pointer; transition: all .25s; padding: 0; }
+.pcar-dot.active { background: var(--purple2); width: 26px; border-radius: 5px; }
+
+
 
 .game-card {
   background: var(--bg3); border: 1px solid var(--border);
@@ -1320,6 +1492,18 @@ footer p { font-size: .72rem; color: var(--muted); }
   .section, .section-alt, .gta-section, .ml-section { padding: 3.5rem 1.3rem; }
   .sec-title { font-size: 1.6rem; }
 
+  /* Preventas carousel */
+  .pw-grid { grid-template-columns: 1fr; gap: 1.6rem; }
+  .pw-slide { padding: 1.6rem; }
+  .pw-title { font-size: clamp(1.6rem, 8vw, 2.2rem); }
+  .pw-editions { gap: .6rem; }
+  .pf-slide { padding: 2.2rem 1.4rem; min-height: 360px; }
+  .pf-slide::before { font-size: 12rem; }
+  .pcar-prev { left: 4px; }
+  .pcar-next { right: 4px; }
+  .pcar-arrow { width: 34px; height: 34px; }
+  .pcar-arrow svg { width: 15px; height: 15px; }
+
   /* GTA6 */
   .gta-title { font-size: clamp(2rem, 11vw, 3rem); }
   .gta-modal-title { font-size: clamp(1.6rem, 9vw, 2.2rem); }
@@ -1386,6 +1570,15 @@ footer p { font-size: .72rem; color: var(--muted); }
   .gta-fact-chip { font-size: .65rem; padding: .4rem .65rem; }
   .gta-cd-box { min-width: 46px; padding: .5rem .35rem; }
   .gta-cd-num { font-size: 1rem; }
+
+  /* Narrow 2-col game cards: price + button no longer fit side by side with
+     full "Agregar" text, so drop to an icon-only round button that always fits. */
+  .game-price { font-size: 1.05rem; }
+  .btn-card {
+    width: 30px; height: 30px; padding: 0; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .btn-card .btn-card-text { display: none; }
 }
 /* ============================================
    ICON SYSTEM
@@ -1464,6 +1657,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
   </a>
   <ul id="nav-links">
     <li><a href="#gta6" style="color:#ff5c9a;"><span class="icon" data-icon="flame"></span> GTA VI</a></li>
+    <li><a href="#preventas">Preventas</a></li>
     <li><a href="#psplus">PS Plus</a></li>
     <li><a href="#fc26">FC 26</a></li>
     <li><a href="#juegos">Juegos AAA</a></li>
@@ -1676,6 +1870,97 @@ nav ul .icon svg { width: 14px; height: 14px; }
   </div>
 </div>
 
+<!-- ===== PREVENTAS ===== -->
+<section class="section section-alt" id="preventas">
+  <div class="sec-eyebrow reveal">Próximos lanzamientos</div>
+  <div class="sec-title reveal">Preventas abiertas</div>
+  <p class="sec-sub reveal">Reservá los próximos grandes lanzamientos de PlayStation. Desliza para ver qué se viene.</p>
+
+  <div class="pcar-wrap reveal">
+    <button class="pcar-arrow pcar-prev" onclick="prevPreventaSlide()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="pcar-arrow pcar-next" onclick="nextPreventaSlide()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <div class="preventa-carousel" id="preventa-carousel">
+
+      <!-- SLIDE 1: MARVEL'S WOLVERINE -->
+      <div class="pcar-slide">
+        <div class="pw-slide">
+          <div class="pw-grid">
+            <div>
+              <div class="pw-badge"><span class="icon" data-icon="claw"></span> Preventa abierta · Insomniac Games</div>
+              <div class="pw-title">MARVEL'S <span>WOLVERINE</span></div>
+              <p class="pw-desc">De los creadores de Spider-Man 2. Logan se une nuevamente a Team X para rescatar mutantes secuestrados por los Reavers, la milicia cibernética al servicio de Bolivar Trask. Historia narrativa original, un jugador, combate brutal cuerpo a cuerpo.</p>
+
+              <div class="pw-facts">
+                <div class="pw-fact"><span class="icon" data-icon="calendar"></span> <strong>15 sep 2026</strong></div>
+                <div class="pw-fact"><span class="icon" data-icon="gamepad"></span> <strong>PS5</strong> exclusivo</div>
+                <div class="pw-fact"><span class="icon" data-icon="gift"></span> Primer título de la trilogía X-Men</div>
+              </div>
+
+              <div class="pw-editions">
+                <div class="pw-ed">
+                  <div class="pw-ed-label"><span class="icon" data-icon="medal1"></span> Primaria</div>
+                  <div class="pw-ed-price">$54.999</div>
+                  <button class="pw-ed-btn" onclick="addToCart('claw','Marvel\'s Wolverine · Primaria','PS5 · Preventa · Digital',54999)">Reservar</button>
+                </div>
+                <div class="pw-ed">
+                  <div class="pw-ed-label"><span class="icon" data-icon="medal2"></span> Secundaria</div>
+                  <div class="pw-ed-price">$31.999</div>
+                  <button class="pw-ed-btn" onclick="addToCart('claw','Marvel\'s Wolverine · Secundaria','PS5 · Preventa · Digital',31999)">Reservar</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="pw-video-panel">
+              <iframe src="https://www.youtube.com/embed/OiBo_NgYI5Q?autoplay=1&mute=1&loop=1&playlist=OiBo_NgYI5Q&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&fs=0"
+                title="Marvel's Wolverine — Extended Gameplay Trailer" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+              <div class="pw-video-tag">Trailer oficial · State of Play jun 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: EA SPORTS FC 27 (TEASER) -->
+      <div class="pcar-slide">
+        <div class="pf-slide">
+          <div class="pf-ribbon"><span class="icon" data-icon="clock"></span> Próximamente</div>
+          <div class="pf-title">EA SPORTS <span>FC 27</span></div>
+          <p class="pf-sub">Todavía no anunciado oficialmente por EA. Esto es lo que se filtró hasta ahora sobre el próximo título de la franquicia:</p>
+
+          <div class="pf-rumors">
+            <div class="pf-rumor"><span class="icon" data-icon="calendar"></span> Fecha rumoreada de lanzamiento: <strong style="color:var(--white)">25 de septiembre, 2026</strong></div>
+            <div class="pf-rumor"><span class="icon" data-icon="clock"></span> Acceso anticipado estimado: 17 de septiembre (Ultimate Edition / EA Play)</div>
+            <div class="pf-rumor"><span class="icon" data-icon="globe"></span> Se rumorea un posible <strong style="color:var(--white)">modo mundo abierto</strong>, el cambio más grande de la franquicia en años</div>
+            <div class="pf-rumor"><span class="icon" data-icon="creditcard"></span> Precio oficial esperado similar a FC 26: USD $69.99</div>
+            <div class="pf-rumor"><span class="icon" data-icon="gamepad"></span> Vendría tanto para <strong style="color:var(--white)">PS5 como PS4</strong> (no sería exclusivo de nueva generación)</div>
+          </div>
+
+          <p class="pf-disclaimer">* Información no confirmada por EA — basada en filtraciones de la industria. Actualizamos apenas haya novedades oficiales.</p>
+
+          <a href="https://wa.me/541123860254?text=Hola!%20Quiero%20que%20me%20avisen%20cuando%20est%C3%A9%20disponible%20la%20preventa%20de%20FC%2027" target="_blank" class="pf-notify-btn">
+            <span class="icon" data-icon="chat"></span> Avisame cuando esté disponible
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="pcar-dots">
+      <button class="pcar-dot active" onclick="goToPreventaSlide(0)"></button>
+      <button class="pcar-dot" onclick="goToPreventaSlide(1)"></button>
+    </div>
+  </div>
+
+  <div class="preventas-note reveal">
+    <span class="icon" data-icon="info"></span>
+    <p><strong>Marvel's Wolverine — precio oficial internacional:</strong> USD $69.99. Lanza el 15 de septiembre de 2026, exclusivo para PS5. Nuestros precios de preventa son estimados para Argentina y están <strong>sujetos a confirmación final</strong> según el tipo de cambio al momento del lanzamiento.</p>
+  </div>
+</section>
+
 <!-- ===== PS PLUS DELUXE ===== -->
 <section class="section" id="psplus">
   <div class="ps-top reveal">
@@ -1806,7 +2091,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
         <div class="game-genre">Acción · Mundo abierto</div>
         <div class="game-title">Spider-Man 2</div>
         <div class="game-desc">Peter Parker y Miles Morales en la aventura más épica de Nueva York.</div>
-        <div class="game-footer"><div class="game-price">$50.900</div><button class="btn-card" onclick="addToCart('spider','Spider-Man 2','PS5 · Digital',50900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-footer"><div class="game-price">$50.900</div><button class="btn-card" onclick="addToCart('spider','Spider-Man 2','PS5 · Digital',50900)"><span class="btn-card-text">Agregar</span> <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
@@ -1822,7 +2107,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
         <div class="game-genre">Aventura · Acción</div>
         <div class="game-title">God Of War Ragnarök</div>
         <div class="game-desc">Kratos y Atreus enfrentan el fin de los mundos en la secuela definitiva.</div>
-        <div class="game-footer"><div class="game-price">$41.900</div><button class="btn-card" onclick="addToCart('axe','God Of War Ragnarök','PS5/PS4 · Digital',41900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-footer"><div class="game-price">$41.900</div><button class="btn-card" onclick="addToCart('axe','God Of War Ragnarök','PS5/PS4 · Digital',41900)"><span class="btn-card-text">Agregar</span> <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
@@ -1838,7 +2123,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
         <div class="game-genre">RPG · Souls-like</div>
         <div class="game-title">Elden Ring: Nightreign</div>
         <div class="game-desc">La nueva expansión cooperativa en The Lands Between. Acción brutal sin pausa.</div>
-        <div class="game-footer"><div class="game-price">$41.900</div><button class="btn-card" onclick="addToCart('sword','Elden Ring: Nightreign','PS5/PS4 · Digital',41900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-footer"><div class="game-price">$41.900</div><button class="btn-card" onclick="addToCart('sword','Elden Ring: Nightreign','PS5/PS4 · Digital',41900)"><span class="btn-card-text">Agregar</span> <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
@@ -1854,7 +2139,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
         <div class="game-genre">Racing · Simulación</div>
         <div class="game-title">Gran Turismo 7</div>
         <div class="game-desc">+400 autos y 90 circuitos. La experiencia de conducción definitiva.</div>
-        <div class="game-footer"><div class="game-price">$41.900</div><button class="btn-card" onclick="addToCart('car','Gran Turismo 7','PS5/PS4 · Digital',41900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-footer"><div class="game-price">$41.900</div><button class="btn-card" onclick="addToCart('car','Gran Turismo 7','PS5/PS4 · Digital',41900)"><span class="btn-card-text">Agregar</span> <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
@@ -1870,7 +2155,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
         <div class="game-genre">Acción · Mundo abierto</div>
         <div class="game-title">Red Dead Redemption II</div>
         <div class="game-desc">La epopeya del viejo oeste de Rockstar. Una de las mejores historias jamás contadas.</div>
-        <div class="game-footer"><div class="game-price">$28.900</div><button class="btn-card" onclick="addToCart('compass','Red Dead Redemption II','PS5/PS4 · Digital',28900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-footer"><div class="game-price">$28.900</div><button class="btn-card" onclick="addToCart('compass','Red Dead Redemption II','PS5/PS4 · Digital',28900)"><span class="btn-card-text">Agregar</span> <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
@@ -1886,7 +2171,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
         <div class="game-genre">Aventura · Survival</div>
         <div class="game-title">The Last Of Us Part I</div>
         <div class="game-desc">Joel y Ellie en el remake definitivo. Una de las historias más aclamadas en PS5.</div>
-        <div class="game-footer"><div class="game-price">$50.900</div><button class="btn-card" onclick="addToCart('shield','The Last Of Us Part I','PS5 · Digital',50900)">Agregar <span class="icon" data-icon="cart"></span></button></div>
+        <div class="game-footer"><div class="game-price">$50.900</div><button class="btn-card" onclick="addToCart('shield','The Last Of Us Part I','PS5 · Digital',50900)"><span class="btn-card-text">Agregar</span> <span class="icon" data-icon="cart"></span></button></div>
       </div>
     </div>
 
@@ -2190,6 +2475,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
   <p>© 2025 Galaxy Games · Argentina · Todos los derechos reservados</p>
   <div class="footer-links">
     <a href="#gta6" style="color:#ff5c9a;">GTA VI</a>
+    <a href="#preventas">Preventas</a>
     <a href="#psplus">PS Plus</a>
     <a href="#fc26">FC 26</a>
     <a href="#juegos">Juegos</a>
@@ -2238,7 +2524,8 @@ const ICONS = {
   camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="13" rx="2.5"/><circle cx="12" cy="13.5" r="3.6"/><path d="M8 7l1.3-2.2h5.4L16 7"/></svg>',
   pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>',
   info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="8" r="0.9" fill="currentColor" stroke="none"/></svg>',
-  compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5l-2 5-3 1.5 2-5z"/></svg>'
+  compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5l-2 5-3 1.5 2-5z"/></svg>',
+  claw: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 3c0 6-1 12 0 18M12 2c0 7-1 13 0 20M18 3c0 6 1 12 0 18"/></svg>'
 };
 
 function renderIcons(root){
@@ -2642,6 +2929,24 @@ function checkoutWA(){
 /* ============================================
    GTA VI MODAL — open/close
 ============================================ */
+/* ============================================
+   PREVENTAS CAROUSEL
+============================================ */
+let preventaSlideIndex = 0;
+const preventaSlideCount = 2;
+function updatePreventaCarousel(){
+  const carousel = document.getElementById('preventa-carousel');
+  if(!carousel) return;
+  // Track is 200% wide (2 slides x 100% viewport each = 50% of track per slide),
+  // so shifting by one slide = 100/preventaSlideCount % of the track's own width.
+  const shiftPct = preventaSlideIndex * (100 / preventaSlideCount);
+  carousel.style.transform = `translateX(-${shiftPct}%)`;
+  document.querySelectorAll('.pcar-dot').forEach((dot, i) => dot.classList.toggle('active', i === preventaSlideIndex));
+}
+function goToPreventaSlide(i){ preventaSlideIndex = i; updatePreventaCarousel(); }
+function nextPreventaSlide(){ preventaSlideIndex = (preventaSlideIndex + 1) % preventaSlideCount; updatePreventaCarousel(); }
+function prevPreventaSlide(){ preventaSlideIndex = (preventaSlideIndex - 1 + preventaSlideCount) % preventaSlideCount; updatePreventaCarousel(); }
+
 function openGTAModal(){
   document.getElementById('gta-modal').classList.add('open');
   document.getElementById('gta-modal-overlay').classList.add('open');
