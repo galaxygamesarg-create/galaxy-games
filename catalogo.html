@@ -2255,8 +2255,11 @@ renderIcons(); // in case DOM is already parsed (script at end of body)
     // resolution and letting CSS stretch it to fill the screen looks the same for
     // an ambient starfield but keeps the workload constant regardless of screen size.
     const maxW = 1600, maxH = 900;
-    W = canvas.width = bgCanvas.width = Math.min(window.innerWidth, maxW);
-    H = canvas.height = bgCanvas.height = Math.min(window.innerHeight, maxH);
+    // Guard against window.innerWidth/innerHeight momentarily reporting 0 (happens
+    // in some embedded/preview iframes before layout settles) — a 0x0 canvas throws
+    // when later used as a drawImage source, so always fall back to a safe minimum.
+    W = canvas.width = bgCanvas.width = Math.max(1, Math.min(window.innerWidth || 0, maxW));
+    H = canvas.height = bgCanvas.height = Math.max(1, Math.min(window.innerHeight || 0, maxH));
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     initNebulae();
@@ -2409,6 +2412,7 @@ renderIcons(); // in case DOM is already parsed (script at end of body)
     requestAnimationFrame(draw);
     if(now - lastFrame < frameInterval) return;
     lastFrame = now;
+    if(bgCanvas.width === 0 || bgCanvas.height === 0) return;
     ctx.clearRect(0,0,W,H);
     ctx.drawImage(bgCanvas, 0, 0);
     drawGalaxyCore();
@@ -2691,5 +2695,9 @@ function filterCatalog(query){
 }
 
 </script>
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

@@ -1395,6 +1395,53 @@ footer::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
   background: linear-gradient(90deg, transparent, var(--purple), var(--cyan), transparent);
 }
+/* ============================================
+   FAQ
+============================================ */
+/* ============================================
+   INSTAGRAM
+============================================ */
+.ig-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(240,80,150,.08) 0%, rgba(255,160,60,.06) 50%, rgba(139,46,255,.08) 100%);
+  border: 1px solid rgba(240,80,150,.25); border-radius: 14px; padding: 2.2rem 2.5rem;
+}
+.ig-left { display: flex; align-items: center; gap: 1.2rem; }
+.ig-icon-wrap {
+  width: 56px; height: 56px; border-radius: 16px; flex-shrink: 0;
+  background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 25px rgba(220,39,67,.35);
+}
+.ig-icon-wrap .icon svg { width: 26px; height: 26px; color: #fff; }
+.ig-handle { font-family: var(--font-d); font-size: 1.2rem; font-weight: 800; }
+.ig-sub { font-size: .85rem; color: var(--muted2); font-weight: 300; max-width: 380px; }
+.ig-follow-btn {
+  display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;
+  background: linear-gradient(135deg, #f09433, #dc2743, #bc1888); color: #fff;
+  padding: .85rem 1.8rem; border-radius: 8px;
+  font-family: var(--font-d); font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+  transition: all .2s; box-shadow: 0 0 20px rgba(220,39,67,.3);
+}
+.ig-follow-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(220,39,67,.5); }
+
+.faq-wrap { max-width: 780px; }
+.faq-item {
+  background: var(--bg3); border: 1px solid var(--purple-border);
+  border-radius: 10px; margin-bottom: .8rem; overflow: hidden;
+}
+.faq-question {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 1.1rem 1.4rem; cursor: pointer; user-select: none;
+}
+.faq-question h3 { font-family: var(--font-d); font-size: .92rem; font-weight: 700; color: var(--white); }
+.faq-question .icon { flex-shrink: 0; color: var(--purple2); transition: transform .3s; }
+.faq-question .icon svg { width: 16px; height: 16px; }
+.faq-item.open .faq-question .icon { transform: rotate(45deg); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+.faq-answer-inner { padding: 0 1.4rem 1.2rem; font-size: .85rem; color: var(--muted2); font-weight: 300; line-height: 1.7; }
+.faq-item.open .faq-answer { max-height: 300px; }
+
 .footer-brand { font-family: var(--font-d); font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 .footer-brand span { color: var(--purple2); text-shadow: 0 0 15px var(--purple); }
 footer p { font-size: .72rem; color: var(--muted); }
@@ -1663,7 +1710,10 @@ nav ul .icon svg { width: 14px; height: 14px; }
     <li><a href="#juegos">Juegos AAA</a></li>
     <li><a href="catalogo.html">Catálogo</a></li>
     <li><a href="#mercadolibre">MercadoLibre</a></li>
-    <li><a href="#opiniones">Opiniones</a></li>
+    <li><a href="#opiniones">Opiniones</a>
+    <a href="#instagram">Instagram</a>
+    <a href="#faq">FAQ</a></li>
+    <li><a href="#faq">FAQ</a></li>
     <li><a href="#contacto">Contacto</a></li>
     <li><a href="https://wa.me/541123860254" target="_blank" class="nav-cta">WhatsApp</a></li>
   </ul>
@@ -2396,6 +2446,67 @@ nav ul .icon svg { width: 14px; height: 14px; }
   </div>
 </section>
 
+<!-- ===== INSTAGRAM ===== -->
+<section class="section" id="instagram">
+  <div class="sec-eyebrow reveal">Seguinos</div>
+  <div class="sec-title reveal">Encontranos en Instagram</div>
+  <p class="sec-sub reveal">Ofertas, novedades y contenido gamer todos los días.</p>
+
+  <div class="ig-banner reveal">
+    <div class="ig-left">
+      <div class="ig-icon-wrap"><span class="icon" data-icon="camera"></span></div>
+      <div>
+        <div class="ig-handle">@galaxygames_ar</div>
+        <div class="ig-sub">Sumate a la comunidad — enterate primero de ofertas, sorteos y lanzamientos como GTA VI y Wolverine.</div>
+      </div>
+    </div>
+    <a href="https://instagram.com/galaxygames_ar" target="_blank" class="ig-follow-btn">
+      <span class="icon" data-icon="camera"></span> Seguir en Instagram
+    </a>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section section-alt" id="faq">
+  <div class="sec-eyebrow reveal">Preguntas frecuentes</div>
+  <div class="sec-title reveal">¿Tenés dudas?</div>
+  <p class="sec-sub reveal">Las preguntas que más nos hacen antes de comprar.</p>
+
+  <div class="faq-wrap">
+
+    <div class="faq-item reveal" onclick="toggleFaq(this)">
+      <div class="faq-question"><h3>¿La cuenta compartida es segura y legal?</h3><span class="icon" data-icon="plus"></span></div>
+      <div class="faq-answer"><div class="faq-answer-inner">Sí. Es un método 100% oficial de PlayStation — la misma plataforma permite compartir la suscripción y el catálogo entre cuentas asociadas. No modificamos ni hackeamos nada, todo se activa igual que si lo compraras vos directo en la PS Store.</div></div>
+    </div>
+
+    <div class="faq-item reveal" onclick="toggleFaq(this)">
+      <div class="faq-question"><h3>¿Cuál es la diferencia entre cuenta primaria y secundaria?</h3><span class="icon" data-icon="plus"></span></div>
+      <div class="faq-answer"><div class="faq-answer-inner"><strong style="color:var(--white)">Primaria:</strong> jugás siempre desde tu propia cuenta de PlayStation, con tus trofeos y progreso guardados en tu usuario. <strong style="color:var(--white)">Secundaria:</strong> jugás desde una cuenta que te proporcionamos nosotros — mismo contenido, precio más accesible.</div></div>
+    </div>
+
+    <div class="faq-item reveal" onclick="toggleFaq(this)">
+      <div class="faq-question"><h3>¿Cuánto tarda la activación?</h3><span class="icon" data-icon="plus"></span></div>
+      <div class="faq-answer"><div class="faq-answer-inner">La activación es inmediata en la gran mayoría de los casos — apenas confirmás el pago, te guiamos paso a paso por WhatsApp y en minutos ya podés jugar. En picos de demanda puede demorar un poco más, pero nunca más de 24hs.</div></div>
+    </div>
+
+    <div class="faq-item reveal" onclick="toggleFaq(this)">
+      <div class="faq-question"><h3>¿Qué pasa si tengo un problema con mi compra?</h3><span class="icon" data-icon="plus"></span></div>
+      <div class="faq-answer"><div class="faq-answer-inner">Tenés garantía durante todo el período que contrataste. Si hay cualquier inconveniente con el acceso, lo solucionamos o te devolvemos el dinero. Nos podés escribir en cualquier momento por WhatsApp.</div></div>
+    </div>
+
+    <div class="faq-item reveal" onclick="toggleFaq(this)">
+      <div class="faq-question"><h3>¿Los juegos y membresías son originales?</h3><span class="icon" data-icon="plus"></span></div>
+      <div class="faq-answer"><div class="faq-answer-inner">100%. Todo se activa directo desde la web oficial de PlayStation, sin copias ni modificaciones. Somos MercadoLíder en MercadoLibre con cientos de operaciones — podés ver las reseñas reales más arriba en esta misma página.</div></div>
+    </div>
+
+    <div class="faq-item reveal" onclick="toggleFaq(this)">
+      <div class="faq-question"><h3>¿Cómo puedo pagar?</h3><span class="icon" data-icon="plus"></span></div>
+      <div class="faq-answer"><div class="faq-answer-inner">Por WhatsApp coordinamos el medio de pago que mejor te quede. Si preferís pagar en cuotas sin interés con tarjeta, tenemos las mismas membresías disponibles en nuestra tienda de MercadoLibre.</div></div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ===== CONTACTO ===== -->
 <section class="section section-alt" id="contacto">
   <div class="sec-eyebrow reveal">Contacto</div>
@@ -2482,6 +2593,8 @@ nav ul .icon svg { width: 14px; height: 14px; }
     <a href="catalogo.html">Catálogo</a>
     <a href="#mercadolibre">MercadoLibre</a>
     <a href="#opiniones">Opiniones</a>
+    <a href="#instagram">Instagram</a>
+    <a href="#faq">FAQ</a>
     <a href="#contacto">Contacto</a>
   </div>
 </footer>
@@ -2525,7 +2638,8 @@ const ICONS = {
   pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/></svg>',
   info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="8" r="0.9" fill="currentColor" stroke="none"/></svg>',
   compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5l-2 5-3 1.5 2-5z"/></svg>',
-  claw: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 3c0 6-1 12 0 18M12 2c0 7-1 13 0 20M18 3c0 6 1 12 0 18"/></svg>'
+  claw: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 3c0 6-1 12 0 18M12 2c0 7-1 13 0 20M18 3c0 6 1 12 0 18"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'
 };
 
 function renderIcons(root){
@@ -2557,8 +2671,11 @@ renderIcons(); // in case DOM is already parsed (script at end of body)
     // resolution and letting CSS stretch it to fill the screen looks the same for
     // an ambient starfield but keeps the workload constant regardless of screen size.
     const maxW = 1600, maxH = 900;
-    W = canvas.width = bgCanvas.width = Math.min(window.innerWidth, maxW);
-    H = canvas.height = bgCanvas.height = Math.min(window.innerHeight, maxH);
+    // Guard against window.innerWidth/innerHeight momentarily reporting 0 (happens
+    // in some embedded/preview iframes before layout settles) — a 0x0 canvas throws
+    // when later used as a drawImage source, so always fall back to a safe minimum.
+    W = canvas.width = bgCanvas.width = Math.max(1, Math.min(window.innerWidth || 0, maxW));
+    H = canvas.height = bgCanvas.height = Math.max(1, Math.min(window.innerHeight || 0, maxH));
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     initNebulae();
@@ -2711,6 +2828,8 @@ renderIcons(); // in case DOM is already parsed (script at end of body)
     requestAnimationFrame(draw);
     if(now - lastFrame < frameInterval) return;
     lastFrame = now;
+    // Extra safety net: never attempt to draw a zero-size canvas as an image source
+    if(bgCanvas.width === 0 || bgCanvas.height === 0) return;
     ctx.clearRect(0,0,W,H);
     ctx.drawImage(bgCanvas, 0, 0);
     drawGalaxyCore();
@@ -2854,6 +2973,15 @@ function closeMobileNav(){
 // Close mobile nav when a link is tapped
 document.querySelectorAll('#nav-links a').forEach(a => a.addEventListener('click', closeMobileNav));
 
+/* ============================================
+   FAQ ACCORDION
+============================================ */
+function toggleFaq(el){
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('open'));
+  if(!wasOpen) el.classList.add('open');
+}
+
 function showToast(name){
   const t = document.getElementById('cart-toast');
   t.innerHTML = '<span class="icon" data-icon="check" style="color:var(--green);margin-right:6px;"></span>' + name + ' agregado';
@@ -2984,5 +3112,9 @@ if(waFloatEl){
   waFloatEl.addEventListener('mouseleave', function(){ this.style.transform='scale(1)'; });
 }
 </script>
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
