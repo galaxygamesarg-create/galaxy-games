@@ -589,7 +589,7 @@ nav ul a:hover::after { transform: scaleX(1); }
 ============================================ */
 .pcar-wrap { position: relative; overflow: hidden; border-radius: 16px; }
 .preventa-carousel {
-  display: flex; width: 200%; transition: transform .5s cubic-bezier(.4,0,.2,1);
+  display: flex; align-items: flex-start; width: 200%; transition: transform .5s cubic-bezier(.4,0,.2,1);
 }
 .pcar-slide { width: 50%; flex-shrink: 0; min-width: 0; box-sizing: border-box; padding: 0 2px; }
 
@@ -3133,10 +3133,19 @@ function updatePreventaCarousel(){
   const shiftPct = preventaSlideIndex * (100 / preventaSlideCount);
   carousel.style.transform = `translateX(-${shiftPct}%)`;
   document.querySelectorAll('.pcar-dot').forEach((dot, i) => dot.classList.toggle('active', i === preventaSlideIndex));
+  // Match the wrapper's height to only the active slide — otherwise a shorter
+  // slide (e.g. on mobile, where content stacks taller) leaves empty space
+  // below it to match its taller sibling.
+  const wrap = document.querySelector('.pcar-wrap');
+  const activeSlide = carousel.children[preventaSlideIndex];
+  if(wrap && activeSlide) wrap.style.height = activeSlide.offsetHeight + 'px';
 }
 function goToPreventaSlide(i){ preventaSlideIndex = i; updatePreventaCarousel(); }
 function nextPreventaSlide(){ preventaSlideIndex = (preventaSlideIndex + 1) % preventaSlideCount; updatePreventaCarousel(); }
 function prevPreventaSlide(){ preventaSlideIndex = (preventaSlideIndex - 1 + preventaSlideCount) % preventaSlideCount; updatePreventaCarousel(); }
+// Set initial height once images/fonts have settled, and keep it correct on resize/rotate
+window.addEventListener('load', () => setTimeout(updatePreventaCarousel, 100));
+window.addEventListener('resize', updatePreventaCarousel);
 
 function openGTAModal(){
   document.getElementById('gta-modal').classList.add('open');
