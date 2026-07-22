@@ -591,7 +591,7 @@ nav ul a:hover::after { transform: scaleX(1); }
 .preventa-carousel {
   display: flex; width: 200%; transition: transform .5s cubic-bezier(.4,0,.2,1);
 }
-.pcar-slide { width: 50%; flex-shrink: 0; box-sizing: border-box; padding: 0 2px; }
+.pcar-slide { width: 50%; flex-shrink: 0; min-width: 0; box-sizing: border-box; padding: 0 2px; }
 
 /* Wolverine slide */
 .pw-slide {
@@ -1618,8 +1618,9 @@ footer p { font-size: .72rem; color: var(--muted); }
   .pw-editions { gap: .6rem; }
   .pf-slide { padding: 1.6rem; }
   .pf-grid { grid-template-columns: 1fr; gap: 1.6rem; }
-  .pf-covers { min-height: 220px; margin-top: .5rem; }
-  .pf-editions { gap: .6rem; }
+  .pf-covers { flex-direction: column; min-height: auto; margin-top: .5rem; }
+  .pf-cover-card { width: 70%; max-width: 240px; }
+  .pf-editions { grid-template-columns: 1fr; gap: .6rem; }
   .pf-slide::before { font-size: 12rem; }
   .pcar-prev { left: 4px; }
   .pcar-next { right: 4px; }
