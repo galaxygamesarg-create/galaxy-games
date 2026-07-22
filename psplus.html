@@ -1775,6 +1775,12 @@ nav ul .icon svg { width: 14px; height: 14px; }
   color: var(--muted2); transition: color .2s;
 }
 .cat-nav-back:hover { color: var(--purple2); }
+@media (max-width: 768px) {
+  .cat-back-link-text { display: none; }
+  .cat-nav-simple { gap: .5rem; }
+  .cat-nav-back { margin-right: 0; }
+  .cat-nav-simple .nav-cta { padding: .4rem .7rem !important; font-size: .55rem !important; }
+}
 
 </style>
 </head>
