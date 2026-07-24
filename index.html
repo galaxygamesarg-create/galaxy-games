@@ -545,6 +545,16 @@ nav ul a:hover::after { transform: scaleX(1); }
   background: linear-gradient(180deg, rgba(5,5,5,.75) 0%, rgba(5,5,5,.5) 40%, rgba(5,5,5,.95) 100%),
               linear-gradient(90deg, rgba(5,5,5,.6) 0%, transparent 40%, rgba(5,5,5,.6) 100%);
 }
+.cod-video-mask {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: #050505;
+  animation: cod-mask-fade 2s ease forwards;
+}
+@keyframes cod-mask-fade {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}
 .cod-content { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; text-align: center; }
 .cod-body { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; text-align: center; }
 .cod-badge {
@@ -2413,6 +2423,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
       title="Call of Duty: Black Ops 2 — Official Reveal Trailer" frameborder="0" allow="autoplay; encrypted-media"></iframe>
   </div>
   <div class="cod-video-overlay"></div>
+  <div class="cod-video-mask"></div>
   <div class="cod-content">
     <div class="cod-badge"><span class="icon" data-icon="flame"></span> Después de 15 años, de vuelta en PS4/PS5</div>
     <div class="cod-title">CALL OF DUTY<br><span>BLACK OPS &amp; BLACK OPS 2</span></div>
