@@ -530,21 +530,23 @@ nav ul a:hover::after { transform: scaleX(1); }
 /* ============================================
    CALL OF DUTY COMEBACK — epic feature section
 ============================================ */
-.cod-section { position: relative; padding: 6rem 2.5rem; overflow: hidden; background: #050505; }
+.cod-section { position: relative; padding: 0 0 5rem; overflow: hidden; background: #050505; }
 .cod-section::before {
   content: ''; position: absolute; inset: 0; z-index: 0;
   background: radial-gradient(circle at 20% 20%, rgba(180,20,20,.15) 0%, transparent 50%),
               radial-gradient(circle at 80% 70%, rgba(120,110,60,.1) 0%, transparent 50%);
   pointer-events: none;
 }
+.cod-hero { position: relative; min-height: 480px; overflow: hidden; padding: 6rem 2.5rem 3rem; display: flex; align-items: center; justify-content: center; }
 .cod-video-bg { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; opacity: .5; }
-.cod-video-bg iframe { position: absolute; top: 50%; left: 50%; width: 177.78%; height: 177.78%; min-width: 100%; min-height: 100%; transform: translate(-50%,-50%); border: none; }
+.cod-video-bg iframe { position: absolute; top: 50%; left: 50%; width: 100%; height: 56.25vw; min-height: 100%; min-width: 177.78vh; transform: translate(-50%,-50%); border: none; }
 .cod-video-overlay {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(180deg, rgba(5,5,5,.75) 0%, rgba(5,5,5,.5) 40%, rgba(5,5,5,.95) 100%),
               linear-gradient(90deg, rgba(5,5,5,.6) 0%, transparent 40%, rgba(5,5,5,.6) 100%);
 }
 .cod-content { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; text-align: center; }
+.cod-body { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; padding: 0 2.5rem; text-align: center; }
 .cod-badge {
   display: inline-flex; align-items: center; gap: 8px;
   background: rgba(200,30,30,.15); border: 1px solid rgba(200,30,30,.4);
@@ -1739,6 +1741,8 @@ footer p { font-size: .72rem; color: var(--muted); }
   .cod-stats-row { gap: 1.4rem; margin: 1.6rem 0 2rem; }
   .cod-stat-num { font-size: 1.25rem; }
   .cod-info-box { padding: 1rem 1.1rem; }
+  .cod-hero { min-height: 400px; padding: 5.5rem 1.3rem 2rem; }
+  .cod-body { padding: 0 1.3rem; }
 
   /* GTA6 */
   .gta-title { font-size: clamp(2rem, 11vw, 3rem); }
@@ -2403,6 +2407,7 @@ nav ul .icon svg { width: 14px; height: 14px; }
 
 <!-- ===== CALL OF DUTY: BLACK OPS COMEBACK ===== -->
 <section class="cod-section reveal" id="cod">
+  <div class="cod-hero">
   <div class="cod-video-bg">
     <iframe src="https://www.youtube.com/embed/x3tedlWs1XY?autoplay=1&mute=1&loop=1&playlist=x3tedlWs1XY&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&playsinline=1&fs=0"
       title="Call of Duty: Black Ops 2 — Official Reveal Trailer" frameborder="0" allow="autoplay; encrypted-media"></iframe>
@@ -2419,7 +2424,10 @@ nav ul .icon svg { width: 14px; height: 14px; }
       <div class="cod-fact"><span class="icon" data-icon="skull"></span> Campaña + Multijugador + <strong>Zombies</strong></div>
       <div class="cod-fact"><span class="icon" data-icon="star"></span> Los ports originales, sin cambios</div>
     </div>
+  </div>
+  </div>
 
+  <div class="cod-body">
     <div class="cod-stats-row">
       <div class="cod-stat"><div class="cod-stat-num">+31M</div><div class="cod-stat-label">Copias vendidas · Black Ops</div></div>
       <div class="cod-stat"><div class="cod-stat-num">$500M</div><div class="cod-stat-label">En 24hs · Black Ops 2 (2012)</div></div>
