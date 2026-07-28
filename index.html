@@ -803,6 +803,9 @@ nav ul a:hover::after { transform: scaleX(1); }
 }
 .pf-ed-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,214,143,.35); }
 .pf-disclaimer { font-size: .68rem; color: var(--muted); font-style: italic; margin-top: 1.2rem; }
+.pf-other-editions { display: flex; align-items: center; gap: 7px; font-size: .78rem; color: var(--muted2); margin-top: .9rem; }
+.pf-other-editions .icon { color: var(--green); flex-shrink: 0; }
+.pf-other-editions .icon svg { width: 14px; height: 14px; }
 
 /* Cover art panel with glow animation */
 .pf-covers { position: relative; display: flex; justify-content: center; align-items: center; gap: 1.1rem; height: 100%; min-height: 320px; }
@@ -2195,23 +2198,19 @@ nav ul .icon svg { width: 14px; height: 14px; }
               </div>
               <div class="pf-note-inline"><span class="icon" data-icon="info"></span> El modo <strong>The Grounds</strong> es exclusivo de PS5 (no disponible en PS4) — el resto del juego es igual en ambas consolas.</div>
 
-              <div class="pf-editions pf-editions-3">
+              <div class="pf-editions">
                 <div class="pf-ed">
-                  <div class="pf-ed-label"><span class="icon" data-icon="medal1"></span> Standard</div>
-                  <div class="pf-ed-bonus">Bonus de preventa + 3x ICONs</div>
-                  <div class="pf-ed-price pf-ed-soon"><span class="icon" data-icon="clock"></span> Pronto</div>
+                  <div class="pf-ed-label"><span class="icon" data-icon="medal1"></span> Primaria</div>
+                  <div class="pf-ed-price">$58.999</div>
+                  <button class="pf-ed-btn" onclick="addToCart('soccer','EA Sports FC 27 Standard · Primaria','PS5/PS4 · Preventa · Digital',58999)">Reservar</button>
                 </div>
                 <div class="pf-ed">
-                  <div class="pf-ed-label"><span class="icon" data-icon="crown"></span> Ultimate</div>
-                  <div class="pf-ed-bonus">+7 días antes · 6.000 FC Points</div>
-                  <div class="pf-ed-price pf-ed-soon"><span class="icon" data-icon="clock"></span> Pronto</div>
-                </div>
-                <div class="pf-ed pf-ed-limited">
-                  <div class="pf-ed-label"><span class="icon" data-icon="trophy"></span> Ultimate Plus</div>
-                  <div class="pf-ed-bonus">10.000 FC Points · Pases T1-T5</div>
-                  <div class="pf-ed-price pf-ed-soon"><span class="icon" data-icon="clock"></span> Pronto</div>
+                  <div class="pf-ed-label"><span class="icon" data-icon="medal2"></span> Secundaria</div>
+                  <div class="pf-ed-price">$31.999</div>
+                  <button class="pf-ed-btn" onclick="addToCart('soccer','EA Sports FC 27 Standard · Secundaria','PS5/PS4 · Preventa · Digital',31999)">Reservar</button>
                 </div>
               </div>
+              <p class="pf-other-editions"><span class="icon" data-icon="crown"></span> También vienen las ediciones <strong style="color:#fff">Ultimate</strong> y <strong style="color:#fff">Ultimate Plus</strong> — precio muy pronto.</p>
 
               <p class="pf-disclaimer">Lanza el 25 de septiembre de 2026 (acceso anticipado desde el 18 para Ultimate y Ultimate Plus). Precio oficial internacional: Standard USD $69.99 / Ultimate USD $99.99 / Ultimate Plus USD $149.99 (edición limitada en preventa hasta el 31 de agosto, no se puede pasar de Ultimate a Ultimate Plus después). Si comprás en PS4, se puede actualizar a PS5 sin costo extra más adelante. Precio en pesos y preventa disponibles muy pronto.</p>
             </div>
